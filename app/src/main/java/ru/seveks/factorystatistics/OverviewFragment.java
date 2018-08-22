@@ -1,6 +1,7 @@
 package ru.seveks.factorystatistics;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -111,9 +112,10 @@ public class OverviewFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ((MainActivity)getActivity()).setStatusBarTranslucent(true);
+        if (getActivity() != null)
+            ((MainActivity)getActivity()).setStatusBarTranslucent(true, Color.WHITE);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

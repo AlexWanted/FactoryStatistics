@@ -1,6 +1,7 @@
 package ru.seveks.factorystatistics;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Path;
 import android.net.Uri;
 import android.os.Build;
@@ -36,13 +37,7 @@ public class HoursFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    int a;//KEK
-    int b;//HAaha
 
-    boolean pasha;
-    //private OnFragmentInteractionListener mListener;
-
-    boolean leha;
     public HoursFragment() {
         // Required empty public constructor
     }
@@ -70,7 +65,6 @@ public class HoursFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((MainActivity)getActivity()).setStatusBarTranslucent(false);
 
         /*if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
@@ -99,6 +93,13 @@ public class HoursFragment extends Fragment {
             }
         });*/
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (getActivity() != null)
+            ((MainActivity)getActivity()).setStatusBarTranslucent(true, Color.BLACK);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
