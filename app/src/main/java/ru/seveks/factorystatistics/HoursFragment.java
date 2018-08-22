@@ -36,7 +36,7 @@ public class HoursFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    int a;//KEK
     int b;//HAaha
     //private OnFragmentInteractionListener mListener;
 
