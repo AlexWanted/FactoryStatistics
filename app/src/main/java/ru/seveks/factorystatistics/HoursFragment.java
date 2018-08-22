@@ -37,7 +37,7 @@ public class HoursFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    int b;
+    int b;//HAaha
     //private OnFragmentInteractionListener mListener;
 
     public HoursFragment() {
