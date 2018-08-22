@@ -98,10 +98,10 @@ public class SettingsFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         if (getActivity() != null)
-            ((MainActivity)getActivity()).setStatusBarTranslucent(true, Color.BLACK);
+            ((MainActivity) getActivity()).setStatusBarTranslucent(true, Color.BLACK);
     }
 
     @Override

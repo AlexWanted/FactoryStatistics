@@ -1,6 +1,16 @@
 <resources>
     <string name="app_name">Factory Statistics</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Settings -->
+    <string name="settings">Настройки</string>
+    <string name="factory_name">Название завода</string>
+    <string name="ftp_directory">Директория в FTP</string>
+
+    <plurals name="weight">
+        <item quantity="zero">%1$d тонн</item>
+        <item quantity="one">%1$d тонна</item>
+        <item quantity="few">%1$d тонны</item>
+        <item quantity="many">%1$d тонн</item>
+        <item quantity="other">%1$d тонн</item>
+    </plurals>
 </resources>
