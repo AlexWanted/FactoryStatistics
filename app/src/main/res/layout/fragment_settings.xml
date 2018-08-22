@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
+    android:clickable="true"
     tools:context=".SettingsFragment">
 
     <android.support.constraint.Guideline
@@ -38,13 +39,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.00" />
+        app:layout_constraintGuide_percent="0.02" />
     <android.support.constraint.Guideline
         android:id="@+id/title_bottom_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.05" />
+        app:layout_constraintGuide_percent="0.07" />
 
     <LinearLayout
         android:id="@+id/close_settings"

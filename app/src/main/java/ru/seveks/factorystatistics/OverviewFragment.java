@@ -15,8 +15,12 @@ import android.transition.ChangeBounds;
 import android.transition.ChangeImageTransform;
 import android.transition.ChangeTransform;
 import android.transition.Fade;
+import android.transition.Slide;
 import android.transition.TransitionInflater;
 import android.transition.TransitionSet;
+import android.transition.Visibility;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,7 +73,11 @@ public class OverviewFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-        setSharedElementEnterTransition(TransitionInflater.from(getContext()).inflateTransition(android.R.transition.move));
+            setSharedElementEnterTransition(TransitionInflater.from(getContext()).inflateTransition(android.R.transition.move));
+
+        if (getActivity() != null)
+            ((MainActivity)getActivity()).setStatusBarTranslucent(true, Color.WHITE);
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -77,22 +85,23 @@ public class OverviewFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         final View view = inflater.inflate(R.layout.fragment_overview, container, false);
         view.findViewById(R.id.text).setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                ft.addSharedElement( view.findViewById(R.id.text), "chart");
-                Fragment mainSettingsFragment = new HoursFragment();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                    mainSettingsFragment.setSharedElementEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(android.R.transition.move));
-                //ft.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_bottom, R.anim.slide_out_top);
-                ft.addToBackStack("charts");
-                ft.replace(R.id.fragments_container, mainSettingsFragment, "charts");
-                ft.commit();
+                if(getActivity().getSupportFragmentManager().findFragmentByTag("charts") == null) {
+                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                    ft.addSharedElement( view.findViewById(R.id.text), "chart");
+                    Fragment hoursFragment = new HoursFragment();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                        hoursFragment.setSharedElementEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(android.R.transition.move));
+                    ft.addToBackStack("charts");
+                    ft.replace(R.id.fragments_container, hoursFragment, "charts");
+                    ft.commit();
+                }
             }
         });
 
@@ -100,22 +109,22 @@ public class OverviewFragment extends Fragment {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                Fragment mainSettingsFragment = new SettingsFragment();
-                //ft.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_bottom, R.anim.slide_out_top);
-                ft.addToBackStack("settings");
-                ft.replace(R.id.fragments_container, mainSettingsFragment, "settings");
-                ft.commit();
+                if(getActivity().getSupportFragmentManager().findFragmentByTag("settings") == null) {
+                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                    Fragment settingsFragment = new SettingsFragment();
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        settingsFragment.setEnterTransition(TransitionInflater.from(getContext())
+                                .inflateTransition(R.transition.slide_in));
+                    }
+
+                    ft.addToBackStack("settings");
+                    ft.add(R.id.fragments_container, settingsFragment, "settings");
+                    ft.commit();
+                }
             }
         });
         return view;
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        if (getActivity() != null)
-            ((MainActivity)getActivity()).setStatusBarTranslucent(true, Color.WHITE);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -128,7 +137,6 @@ public class OverviewFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
         /*if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {

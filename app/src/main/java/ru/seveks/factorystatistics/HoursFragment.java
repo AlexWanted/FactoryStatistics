@@ -139,6 +139,8 @@ public class HoursFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        if (getActivity() != null)
+            ((MainActivity)getActivity()).setStatusBarTranslucent(true, Color.WHITE);
         //mListener = null;
     }
 
