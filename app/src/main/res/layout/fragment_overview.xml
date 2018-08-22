@@ -256,6 +256,7 @@
                 app:barPaddingRight="3dp"
                 app:barPaddingTop="5dp"
                 app:barPaddingBottom="5dp"
+                android:padding="10dp"
                 android:transitionName="graph"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>

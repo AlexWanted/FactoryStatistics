@@ -39,9 +39,18 @@ public class HoursFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private ArrayList<Double> dataset;
 
     public HoursFragment() {
         // Required empty public constructor
+    }
+
+    public static HoursFragment newInstance(ArrayList<Double> data) {
+        Bundle args = new Bundle();
+        args.putSerializable("data", data);
+        HoursFragment fragment = new HoursFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     /**
@@ -52,22 +61,11 @@ public class HoursFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment HoursFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static HoursFragment newInstance(/*String param1, String param2*/) {
-        HoursFragment fragment = new HoursFragment();
-        Bundle args = new Bundle();
-/*
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-*/
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        dataset = (ArrayList<Double>) getArguments().getSerializable("data");
         /*if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -79,17 +77,7 @@ public class HoursFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_hours, container, false);
-        ArrayList<Double> values = new ArrayList<Double>();
-        values.add(10.3);
-        values.add(41.3);
-        values.add(52.6);
-        values.add(89.8);
-        values.add(131.1);
-        values.add(12.1);
-        values.add(78.4);
-        values.add(90.2);
-        values.add(43.1);
-        ((GraphView)view.findViewById(R.id.graph)).setBarValues(values);
+        ((GraphView)view.findViewById(R.id.graph)).setBarValues(dataset);
 
         /*ShapeOfView shapeOfView = view.findViewById(R.id.myShape);
         shapeOfView.setClipPathCreator(new ClipPathManager.ClipPathCreator() {

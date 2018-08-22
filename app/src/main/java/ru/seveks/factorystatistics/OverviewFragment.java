@@ -29,6 +29,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 
 /**
@@ -98,16 +99,10 @@ public class OverviewFragment extends Fragment {
         animateValues(weight_3, (TextView)view.findViewById(R.id.by_previous_working_day));
 
         final GraphView graphView = view.findViewById(R.id.graph);
-        ArrayList<Double> values = new ArrayList<>();
-        values.add(10.3);
-        values.add(41.3);
-        values.add(52.6);
-        values.add(89.8);
-        values.add(131.1);
-        values.add(12.1);
-        values.add(78.4);
-        values.add(90.2);
-        values.add(43.1);
+        final ArrayList<Double> values = new ArrayList<>();
+        for (int i=0; i<24; i++){
+            values.add(new Random().nextDouble() % 136);
+        }
         graphView.setBarValues(values);
 
         graphView.setOnClickListener(new View.OnClickListener() {
@@ -117,7 +112,7 @@ public class OverviewFragment extends Fragment {
             if(getActivity().getSupportFragmentManager().findFragmentByTag("charts") == null) {
                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                 ft.addSharedElement( graphView, graphView.getTransitionName());
-                Fragment hoursFragment = new HoursFragment();
+                Fragment hoursFragment = HoursFragment.newInstance(values);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                     hoursFragment.setSharedElementEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(android.R.transition.move));
                 ft.addToBackStack("charts");
