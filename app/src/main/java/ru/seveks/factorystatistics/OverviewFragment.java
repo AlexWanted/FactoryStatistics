@@ -1,5 +1,6 @@
 package ru.seveks.factorystatistics;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
@@ -24,9 +25,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
-
-import java.util.ArrayList;
 
 
 /**
@@ -47,6 +47,7 @@ public class OverviewFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    int weight_1 = 42, weight_2 = 10, weight_3 = 15;
     //private OnFragmentInteractionListener mListener;
 
     public OverviewFragment() {
@@ -90,34 +91,24 @@ public class OverviewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_overview, container, false);
 
-        final GraphView graph = view.findViewById(R.id.graph);
-        ArrayList<Double> barValues = new ArrayList<>();
-        barValues.add(10.3);
-        barValues.add(41.3);
-        barValues.add(52.6);
-        barValues.add(89.8);
-        barValues.add(131.1);
-        barValues.add(12.1);
-        barValues.add(78.4);
-        barValues.add(90.2);
-        barValues.add(43.1);
-        graph.setBarValues(barValues);
+        animateValues(weight_1, (TextView)view.findViewById(R.id.by_day));
+        animateValues(weight_2, (TextView)view.findViewById(R.id.by_working_day));
+        animateValues(weight_3, (TextView)view.findViewById(R.id.by_previous_working_day));
 
         view.findViewById(R.id.text).setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
-                if(getActivity().getSupportFragmentManager().findFragmentByTag("charts") == null) {
-                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                    ft.addSharedElement( view.findViewById(R.id.text), "chart");
-                    ft.addSharedElement( graph, "graph");
-                    Fragment hoursFragment = new HoursFragment();
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                        hoursFragment.setSharedElementEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(android.R.transition.move));
-                    ft.addToBackStack("charts");
-                    ft.replace(R.id.fragments_container, hoursFragment, "charts");
-                    ft.commit();
-                }
+            if(getActivity().getSupportFragmentManager().findFragmentByTag("charts") == null) {
+                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                ft.addSharedElement( view.findViewById(R.id.text), "chart");
+                Fragment hoursFragment = new HoursFragment();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                    hoursFragment.setSharedElementEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(android.R.transition.move));
+                ft.addToBackStack("charts");
+                ft.replace(R.id.fragments_container, hoursFragment, "charts");
+                ft.commit();
+            }
             }
         });
 
@@ -141,6 +132,20 @@ public class OverviewFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    private void animateValues(int value, final TextView view) {
+        ValueAnimator animator = ValueAnimator.ofInt(0, value);
+        animator.setDuration(1500);
+        animator.setInterpolator(new DecelerateInterpolator());
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            public void onAnimationUpdate(ValueAnimator animation) {
+                view.setText(getContext().getResources().getQuantityString(R.plurals.weight,
+                                (int)animation.getAnimatedValue(),
+                                (int)animation.getAnimatedValue()));
+            }
+        });
+        animator.start();
     }
 
     // TODO: Rename method, update argument and hook method into UI event
