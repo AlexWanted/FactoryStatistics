@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -23,17 +24,13 @@ public class GraphView extends View {
     private ArrayList<Rect> mBarRects = new ArrayList<>();
     private int barColor = -1;
     private int barBackgroundColor = -1;
-    private int graphBackgroundColor = -1;
+    private int graphBackgroundColor = Color.parseColor("#F5F5F5");
     private float barPadding = 0;
     private float barPaddingLeft = 0;
     private float barPaddingRight = 0;
     private float barPaddingTop = 0;
     private float barPaddingBottom = 0;
     private double maxBarValue = 0;
-
-    private static final int DEFAULT_BAR_COLOR = Color.RED;
-    private static final int DEFAULT_BAR_BACKGROUND_COLOR = Color.YELLOW;
-    private static final int DEFAULT_GRAPH_BACKGROUND_COLOR = Color.GRAY;
 
     public GraphView(Context context) {
         super(context);
@@ -60,6 +57,11 @@ public class GraphView extends View {
         mGraphRect = new Rect();
         mBarRect = new Rect();
 
+        barColor = ContextCompat.getColor(context, R.color.colorAccent);
+        barBackgroundColor = Color.parseColor("#F5F5F5");
+        graphBackgroundColor = ContextCompat.getColor(context, android.R.color.transparent);
+
+
         if (context != null){
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.GraphView);
             barPadding = a.getDimension(R.styleable.GraphView_barPadding, 0);
@@ -67,6 +69,7 @@ public class GraphView extends View {
             barPaddingRight = a.getDimension(R.styleable.GraphView_barPaddingRight, 0);
             barPaddingTop = a.getDimension(R.styleable.GraphView_barPaddingTop, 0);
             barPaddingBottom = a.getDimension(R.styleable.GraphView_barPaddingBottom, 0);
+
         }
 
     }
@@ -159,15 +162,15 @@ public class GraphView extends View {
     }
 
     public int getGraphBackgroundColor() {
-        return graphBackgroundColor != -1 ? graphBackgroundColor : DEFAULT_GRAPH_BACKGROUND_COLOR;
+        return graphBackgroundColor;
     }
 
     public int getBarBackgroundColor() {
-        return barBackgroundColor != -1 ? barBackgroundColor : DEFAULT_BAR_BACKGROUND_COLOR;
+        return barBackgroundColor;
     }
 
     public int getBarColor() {
-        return barColor != -1 ? barColor : DEFAULT_BAR_COLOR;
+        return barColor;
     }
 
     /**

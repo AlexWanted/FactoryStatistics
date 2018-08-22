@@ -28,6 +28,8 @@ import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -95,13 +97,26 @@ public class OverviewFragment extends Fragment {
         animateValues(weight_2, (TextView)view.findViewById(R.id.by_working_day));
         animateValues(weight_3, (TextView)view.findViewById(R.id.by_previous_working_day));
 
-        view.findViewById(R.id.text).setOnClickListener(new View.OnClickListener() {
+        final GraphView graphView = view.findViewById(R.id.graph);
+        ArrayList<Double> values = new ArrayList<>();
+        values.add(10.3);
+        values.add(41.3);
+        values.add(52.6);
+        values.add(89.8);
+        values.add(131.1);
+        values.add(12.1);
+        values.add(78.4);
+        values.add(90.2);
+        values.add(43.1);
+        graphView.setBarValues(values);
+
+        graphView.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
             if(getActivity().getSupportFragmentManager().findFragmentByTag("charts") == null) {
                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                ft.addSharedElement( view.findViewById(R.id.text), "chart");
+                ft.addSharedElement( graphView, graphView.getTransitionName());
                 Fragment hoursFragment = new HoursFragment();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                     hoursFragment.setSharedElementEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(android.R.transition.move));
