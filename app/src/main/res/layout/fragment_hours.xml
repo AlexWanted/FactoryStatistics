@@ -5,6 +5,12 @@
     android:layout_height="match_parent"
     tools:context=".HoursFragment">
 
+    <ru.seveks.factorystatistics.GraphView
+        android:id="@+id/graph"
+        android:padding="16dp"
+        android:layout_marginTop="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
     <TextView
         android:id="@+id/chart"
         android:layout_width="wrap_content"

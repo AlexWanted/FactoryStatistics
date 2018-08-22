@@ -17,10 +17,13 @@ public class GraphView extends View {
 
     private static final String TAG = GraphView.class.getSimpleName();
     private Paint mPaint;
-    private Rect mGraphRect, mBarRect[];
+    private Rect mGraphRect, mBarRect;
     private ArrayList<Double> mBarValues = new ArrayList<>();
+    private ArrayList<Rect> mBarRects = new ArrayList<>();
     private Color barColor, barBackgroundColor, graphBackgroundColor;
     private double mMaxBarValue = 140;
+
+    private static final int BAR_COLOR = Color.RED;
 
     public GraphView(Context context) {
         super(context);
@@ -45,7 +48,7 @@ public class GraphView extends View {
     private void init(){
         mPaint = new Paint();
         mGraphRect = new Rect();
-        mBarRect = new Rect[getBarCount()];
+        mBarRect = new Rect();
     }
 
     @Override
@@ -65,10 +68,18 @@ public class GraphView extends View {
         if (getBarCount() != 0){
             for (int i=0; i<getBarCount(); i++){
                 int barWidth = (right-left)/getBarCount();
-                mBarRect[i].left = mGraphRect.left + i*barWidth;
-                mBarRect[i].right = mBarRect[i].left+barWidth;
-                mBarRect[i].top =   top + (int)((mBarValues.get(i) * (mGraphRect.bottom-mGraphRect.top))/mMaxBarValue) ;
-                mBarRect[i].bottom = mGraphRect.bottom;
+                mBarRect.left = 0;
+                mBarRect.right = 0;
+                mBarRect.top = 0;
+                mBarRect.bottom = 0;
+                mBarRect.left = mGraphRect.left + i*barWidth;
+                mBarRect.right = mGraphRect.left + i*barWidth+barWidth;
+                mBarRect.top = top + (int)((mBarValues.get(i) * (mGraphRect.bottom-mGraphRect.top))/mMaxBarValue) ;
+                mBarRect.bottom = mGraphRect.bottom;
+                mBarRects.add(mBarRect);
+                mPaint.setColor(Color.parseColor("#FF0000"));
+                canvas.drawRect(mBarRect, mPaint);
+
 
             }
         }
@@ -76,17 +87,35 @@ public class GraphView extends View {
 
     }
 
+
+    /**
+     * @return возвращает количество пиков
+     */
     public int getBarCount(){
         return mBarValues.size();
     }
 
-    public ArrayList<Double> getBarValues() {
-        return mBarValues;
+    /**
+     * Ставим максимальное значение графа, относительно которого будет вычисляться размер
+     * каждого отдельного пика. Если при инициализации graphView его не установить то
+     * автоматически будет выбрано наибольшее значение
+     * @param value
+     */
+    public void setMaxBarValue(double value){
+        this.mMaxBarValue = value;
+        invalidate();
+        requestLayout();
     }
 
+    /**
+     * Устанавливает значения пиков. Если не задать во вью будет лишь фон graphView
+     * @param mBarValues
+     */
     public void setBarValues(ArrayList<Double> mBarValues) {
         this.mBarValues = mBarValues;
         invalidate();
         requestLayout();
     }
+
+
 }
