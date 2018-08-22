@@ -36,7 +36,7 @@ public class HoursFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    
     //private OnFragmentInteractionListener mListener;
 
     public HoursFragment() {
@@ -79,18 +79,6 @@ public class HoursFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_hours, container, false);
-        view.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getContext(), "Отмена", Toast.LENGTH_SHORT).show();
-            }
-        });
-        view.findViewById(R.id.apply).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getContext(), "Сохранить", Toast.LENGTH_SHORT).show();
-            }
-        });
         /*ShapeOfView shapeOfView = view.findViewById(R.id.myShape);
         shapeOfView.setClipPathCreator(new ClipPathManager.ClipPathCreator() {
             @Override
