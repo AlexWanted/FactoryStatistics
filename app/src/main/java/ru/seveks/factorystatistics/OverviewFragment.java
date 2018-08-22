@@ -92,15 +92,16 @@ public class OverviewFragment extends Fragment {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                ft.addSharedElement( view.findViewById(R.id.text), "chart");
-                Fragment mainSettingsFragment = new HoursFragment();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                    mainSettingsFragment.setSharedElementEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(android.R.transition.move));
-                //ft.setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_bottom, R.anim.slide_out_top);
-                ft.addToBackStack("charts");
-                ft.replace(R.id.fragments_container, mainSettingsFragment, "charts");
-                ft.commit();
+                if(getActivity().getSupportFragmentManager().findFragmentByTag("charts") == null) {
+                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                    ft.addSharedElement( view.findViewById(R.id.text), "chart");
+                    Fragment hoursFragment = new HoursFragment();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                        hoursFragment.setSharedElementEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(android.R.transition.move));
+                    ft.addToBackStack("charts");
+                    ft.replace(R.id.fragments_container, hoursFragment, "charts");
+                    ft.commit();
+                }
             }
         });
 
@@ -108,16 +109,13 @@ public class OverviewFragment extends Fragment {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-
                 if(getActivity().getSupportFragmentManager().findFragmentByTag("settings") == null) {
+                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                     Fragment settingsFragment = new SettingsFragment();
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         settingsFragment.setEnterTransition(TransitionInflater.from(getContext())
                                 .inflateTransition(R.transition.slide_in));
-                        settingsFragment.setReturnTransition(TransitionInflater.from(getContext())
-                                .inflateTransition(R.transition.slide_out));
                     }
 
                     ft.addToBackStack("settings");
