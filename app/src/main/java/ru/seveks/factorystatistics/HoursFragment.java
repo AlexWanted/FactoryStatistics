@@ -85,6 +85,10 @@ public class HoursFragment extends Fragment {
         values.add(52.6);
         values.add(89.8);
         values.add(131.1);
+        values.add(12.1);
+        values.add(78.4);
+        values.add(90.2);
+        values.add(43.1);
         ((GraphView)view.findViewById(R.id.graph)).setBarValues(values);
 
         /*ShapeOfView shapeOfView = view.findViewById(R.id.myShape);
