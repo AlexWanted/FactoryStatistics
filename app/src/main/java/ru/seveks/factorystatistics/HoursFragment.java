@@ -40,6 +40,7 @@ public class HoursFragment extends Fragment {
     int b;//HAaha
     //private OnFragmentInteractionListener mListener;
 
+    boolean leha;
     public HoursFragment() {
         // Required empty public constructor
     }
