@@ -26,6 +26,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -86,8 +88,21 @@ public class OverviewFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         final View view = inflater.inflate(R.layout.fragment_overview, container, false);
+
+        final GraphView graph = view.findViewById(R.id.graph);
+        ArrayList<Double> barValues = new ArrayList<>();
+        barValues.add(10.3);
+        barValues.add(41.3);
+        barValues.add(52.6);
+        barValues.add(89.8);
+        barValues.add(131.1);
+        barValues.add(12.1);
+        barValues.add(78.4);
+        barValues.add(90.2);
+        barValues.add(43.1);
+        graph.setBarValues(barValues);
+
         view.findViewById(R.id.text).setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
@@ -95,6 +110,7 @@ public class OverviewFragment extends Fragment {
                 if(getActivity().getSupportFragmentManager().findFragmentByTag("charts") == null) {
                     FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                     ft.addSharedElement( view.findViewById(R.id.text), "chart");
+                    ft.addSharedElement( graph, "graph");
                     Fragment hoursFragment = new HoursFragment();
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                         hoursFragment.setSharedElementEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(android.R.transition.move));

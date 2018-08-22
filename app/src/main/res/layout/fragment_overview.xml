@@ -250,6 +250,14 @@
             app:cardUseCompatPadding="true"
             app:cardElevation="3dp"
             app:cardCornerRadius="12dp">
+            <ru.seveks.factorystatistics.GraphView
+                android:id="@+id/graph"
+                android:padding="16dp"
+                app:barPaddingLeft="5dp"
+                app:barPaddingRight="5dp"
+                android:transitionName="graph"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
             <TextView
                 android:id="@+id/text"
                 android:layout_width="match_parent"
