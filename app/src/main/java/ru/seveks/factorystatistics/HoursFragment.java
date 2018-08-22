@@ -20,6 +20,8 @@ import android.widget.Toast;
 import com.github.florent37.shapeofview.ShapeOfView;
 import com.github.florent37.shapeofview.manager.ClipPathManager;
 
+import java.util.ArrayList;
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -77,6 +79,14 @@ public class HoursFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_hours, container, false);
+        ArrayList<Double> values = new ArrayList<Double>();
+        values.add(10.3);
+        values.add(41.3);
+        values.add(52.6);
+        values.add(89.8);
+        values.add(131.1);
+        ((GraphView)view.findViewById(R.id.graph)).setBarValues(values);
+
         /*ShapeOfView shapeOfView = view.findViewById(R.id.myShape);
         shapeOfView.setClipPathCreator(new ClipPathManager.ClipPathCreator() {
             @Override
