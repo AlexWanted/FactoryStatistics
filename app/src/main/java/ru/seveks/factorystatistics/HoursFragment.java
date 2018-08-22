@@ -38,6 +38,8 @@ public class HoursFragment extends Fragment {
     private String mParam2;
     int a;//KEK
     int b;//HAaha
+
+    boolean pasha;
     //private OnFragmentInteractionListener mListener;
 
     boolean leha;
