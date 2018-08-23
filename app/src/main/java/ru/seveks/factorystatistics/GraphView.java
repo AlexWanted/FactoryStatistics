@@ -75,8 +75,8 @@ public class GraphView extends View {
 
         mPaint.setColor(Color.parseColor("#101010"));
         mPaint.setTextAlign(Paint.Align.CENTER);
-        mPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
         mPaint.setFlags(Paint.LINEAR_TEXT_FLAG);
+        mPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
 
         ArrayList<Float> values = new ArrayList<>();
         values.add(1f);
@@ -111,9 +111,6 @@ public class GraphView extends View {
         barPaddingTop = 0;
         barPaddingBottom = 0;
 
-
-
-
         if (context != null && attrs != null){
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.GraphView);
             barPadding = a.getDimension(R.styleable.GraphView_barPadding, 0);
@@ -124,12 +121,15 @@ public class GraphView extends View {
             mBar = a.getDrawable(R.styleable.GraphView_bar);
             mBarBackground = a.getDrawable(R.styleable.GraphView_backgroundBar);
             mGraphBackground = a.getDrawable(R.styleable.GraphView_backgroundGraph);
-            if (getBar() == null)
+            if (getBar() == null) {
                 setBarColor(ContextCompat.getColor(context, R.color.colorAccent));
-            if (getBarBackground() == null)
+            }
+            if (getBarBackground() == null) {
                 setBarBackgroundColor(ContextCompat.getColor(context, R.color.colorLightGray));
-            if (getGraphBackground() == null)
+            }
+            if (getGraphBackground() == null) {
                 setGraphBackgroundColor(ContextCompat.getColor(context, R.color.colorTransparent));
+            }
             textSize = a.getDimension(R.styleable.GraphView_textSize, 0);
 
         }
@@ -138,19 +138,15 @@ public class GraphView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        mGraphRect = canvas.getClipBounds();
+        canvas.getClipBounds(mGraphRect);
         mGraphRect.left += getPaddingLeft();
         mGraphRect.right -= getPaddingRight();
         mGraphRect.top += getPaddingTop();
         mGraphRect.bottom -= getPaddingBottom();
         getGraphBackground().setBounds(mGraphRect);
         getGraphBackground().draw(canvas);
-        Log.d(TAG, "Graph Width = "+mGraphRect.width());
-        float widthCounter = 0;
         if (getBarCount() != 0){
             float barWidth = (float) mGraphRect.width()/getBarCount();
-            Log.d(TAG, "Bar count = "+getBarCount());
-            Log.d(TAG, "Bar Width = "+barWidth);
             for (int i=0; i<getBarCount(); i++){
                 mBarRect.left = mBarRect.right = mBarRect.top = mBarRect.bottom  = 0;
 
@@ -159,8 +155,6 @@ public class GraphView extends View {
                 mBarRect.top = mGraphRect.top;
                 mBarRect.bottom = mGraphRect.bottom;
                 mBarRects.add(mBarRect);
-                widthCounter += mBarRect.width();
-                Log.d(TAG, "Bar("+i+") Width = "+widthCounter);
                 if (barPadding == 0 && (barPaddingLeft != 0 || barPaddingRight != 0 ||
                                 barPaddingTop != 0  || barPaddingBottom != 0)){
                     mBarRect.left += barPaddingLeft;
@@ -173,13 +167,8 @@ public class GraphView extends View {
                     mBarRect.top += barPadding;
                     mBarRect.bottom -= barPadding;
                 }
-                Log.d(TAG, "Bar Width(Padding) = "+mBarRect.width());
 
-                if (textSize > mBarRect.width()) {
-                    do {
-                        textSize -= 0.3f;
-                    } while (textSize >= mBarRect.width());
-                }
+                if (textSize > mBarRect.width()) textSize = mBarRect.width();
 
                 mTextRect.top = (int) (mBarRect.bottom-textSize);
                 mTextRect.bottom = mBarRect.bottom;
@@ -188,8 +177,7 @@ public class GraphView extends View {
 
                 mBarRect.bottom = mTextRect.top;
                 int barHeight = mBarRect.bottom-mBarRect.top;
-                double barRatio = barValues.get(i) / maxBarValue;
-                int barRectBottom = mBarRect.bottom;
+                float barRatio = barValues.get(i) / maxBarValue;
                 mBarRect.bottom -= barHeight*barRatio;
                 getBarBackground().setBounds(mBarRect);
                 getBarBackground().draw(canvas);
@@ -198,7 +186,7 @@ public class GraphView extends View {
                 mPaint.setTextSize(textSize);
                 canvas.drawText(String.valueOf(i), mTextRect.centerX(), mTextRect.bottom, mPaint);
 
-                mBarRect.bottom = barRectBottom;
+                mBarRect.bottom = mTextRect.top;
                 mBarRect.top += (1-barRatio)*barHeight;
 
                 getBar().setBounds(mBarRect);
@@ -244,7 +232,7 @@ public class GraphView extends View {
                     invalidate();
                 }
             });
-            animator.setDuration(4000).start();
+            animator.setDuration(1250).start();
         } else {
             this.maxBarValue = value;
             invalidate();
