@@ -10,5 +10,6 @@
         <attr name="backgroundBar" format="reference|color"/>
         <attr name="bar" format="reference|color"/>
         <attr name="textSize" format="dimension"/>
+        <attr name="textColor" format="color"/>
     </declare-styleable>
 </resources>
