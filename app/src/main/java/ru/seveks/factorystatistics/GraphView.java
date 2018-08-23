@@ -12,7 +12,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
-import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -32,12 +31,10 @@ public class GraphView extends View {
     private Rect mGraphRect, mBarRect, mTextRect;
     private ArrayList<Float> barValues = new ArrayList<>();
     private ArrayList<Rect> mBarRects = new ArrayList<>();
-    private int barColor = -1;
-    private int barBackgroundColor = -1;
-    private int graphBackgroundColor = -1;
     private Drawable mBar;
     private Drawable mBarBackground;
     private Drawable mGraphBackground;
+    private int textColor;
     /*private int mBarResource;
     private int mBarBackgroundResource;
     private int mGraphBackgroundResource;*/
@@ -47,7 +44,6 @@ public class GraphView extends View {
     private float barPaddingTop = 0;
     private float barPaddingBottom = 0;
     private float maxBarValue = 0;
-
     private float textSize = 0;
 
     public GraphView(Context context) {
@@ -77,6 +73,11 @@ public class GraphView extends View {
         mBarRect = new Rect();
         mTextRect = new Rect();
 
+        mPaint.setColor(Color.parseColor("#101010"));
+        mPaint.setTextAlign(Paint.Align.CENTER);
+        mPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
+        mPaint.setFlags(Paint.LINEAR_TEXT_FLAG);
+
         ArrayList<Float> values = new ArrayList<>();
         values.add(1f);
         values.add(2f);
@@ -85,6 +86,12 @@ public class GraphView extends View {
         values.add(16f);
         values.add(32f);
         setBarValues(values, false);
+
+        barPadding = 0;
+        barPaddingLeft = 0;
+        barPaddingRight = 0;
+        barPaddingTop = 0;
+        barPaddingBottom = 0;
 
 
 
@@ -113,30 +120,27 @@ public class GraphView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        int left = getPaddingLeft(),
-                right = getWidth()-getPaddingRight(),
-                top = getPaddingTop(),
-                bottom = getHeight()-getPaddingBottom();
-
-        mGraphRect.left = left;
-        mGraphRect.right = right;
-        mGraphRect.top = top;
-        mGraphRect.bottom = bottom;
+        mGraphRect.left = getPaddingLeft();
+        mGraphRect.right = getRight()-getPaddingRight();
+        mGraphRect.top = getPaddingTop();
+        mGraphRect.bottom = getBottom()-getPaddingBottom();
         getGraphBackground().setBounds(mGraphRect);
         getGraphBackground().draw(canvas);
-
-        //canvas.drawRect(mGraphRect, mPaint);
+        Log.d(TAG, "Graph Width = "+mGraphRect.width());
         if (getBarCount() != 0){
+            int barWidth = mGraphRect.width()/getBarCount();
+            Log.d(TAG, "Bar count = "+getBarCount());
+            Log.d(TAG, "Bar Width = "+barWidth);
             for (int i=0; i<getBarCount(); i++){
-                int barWidth = (right-left)/getBarCount();
                 mBarRect.left = mBarRect.right = mBarRect.top = mBarRect.bottom  = 0;
+
                 mBarRect.left = mGraphRect.left + i*barWidth;
-                mBarRect.right = mGraphRect.left + i*barWidth+barWidth;
+                mBarRect.right = mGraphRect.left + i*barWidth + barWidth;
                 mBarRect.top = mGraphRect.top;
                 mBarRect.bottom = mGraphRect.bottom;
-
-                if (barPadding == 0 &&
-                        (barPaddingLeft != 0 || barPaddingRight != 0 ||
+                mBarRects.add(mBarRect);
+                Log.d(TAG, "Bar("+i+") Width = "+mBarRect.width());
+                if (barPadding == 0 && (barPaddingLeft != 0 || barPaddingRight != 0 ||
                                 barPaddingTop != 0  || barPaddingBottom != 0)){
                     mBarRect.left += barPaddingLeft;
                     mBarRect.right -= barPaddingRight;
@@ -148,7 +152,13 @@ public class GraphView extends View {
                     mBarRect.top += barPadding;
                     mBarRect.bottom -= barPadding;
                 }
-                mBarRects.add(mBarRect);
+                Log.d(TAG, "Bar Width(Padding) = "+mBarRect.width());
+
+                if (textSize > mBarRect.width()) {
+                    do {
+                        textSize -= 0.3f;
+                    } while (textSize >= mBarRect.width());
+                }
 
                 mTextRect.top = (int) (mBarRect.bottom-textSize);
                 mTextRect.bottom = mBarRect.bottom;
@@ -164,17 +174,12 @@ public class GraphView extends View {
                 getBarBackground().draw(canvas);
 
 
-                mPaint.setColor(Color.parseColor("#101010"));
-                mPaint.setTextAlign(Paint.Align.CENTER);
                 mPaint.setTextSize(textSize);
                 canvas.drawText(String.valueOf(i), mTextRect.centerX(), mTextRect.bottom, mPaint);
-                //canvas.drawRect(mBarRect, mPaint);
 
                 mBarRect.bottom = barRectBottom;
                 mBarRect.top += (1-barRatio)*barHeight;
 
-                //mPaint.setColor(getBarColor());
-                //canvas.drawRect(mBarRect, mPaint);
                 getBar().setBounds(mBarRect);
                 getBar().draw(canvas);
 

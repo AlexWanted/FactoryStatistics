@@ -17,6 +17,7 @@
         app:barPaddingBottom="5dp"
         app:barPaddingLeft="2dp"
         app:barPaddingRight="2dp"
-        app:barPaddingTop="5dp" />
+        app:barPaddingTop="5dp"
+        app:textSize="18sp"/>
 
 </FrameLayout>
