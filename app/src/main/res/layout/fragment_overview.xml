@@ -260,13 +260,13 @@
                 android:id="@+id/graph"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="10dp"
                 app:bar="@drawable/header_gradient"
-                app:barPaddingBottom="5dp"
+                app:textSize="25sp" />5dp"
+                app:barPaddingBottom="Z"
                 app:barPaddingLeft="2dp"
-                app:barPaddingRight="2dp"
-                app:barPaddingTop="5dp"
-                app:textSize="25sp" />
+
+                pp:barPaddingRight="2dp
+                 app:barPaddingTop= />
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView

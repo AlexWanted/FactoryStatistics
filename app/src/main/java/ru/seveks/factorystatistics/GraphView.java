@@ -83,8 +83,26 @@ public class GraphView extends View {
         values.add(2f);
         values.add(4f);
         values.add(8f);
-        values.add(16f);
+        values.add(11f);
+        values.add(38f);
+        values.add(35f);
+        values.add(2f);
+        values.add(59f);
+        values.add(10f);
+        values.add(1f);
+        values.add(44f);
+        values.add(66f);
+        values.add(17f);
+        values.add(11f);
+        values.add(43f);
+        values.add(21f);
+        values.add(64f);
+        values.add(12f);
+        values.add(33f);
+        values.add(21f);
         values.add(32f);
+        values.add(34f);
+        values.add(41f);
         setBarValues(values, false);
 
         barPadding = 0;
@@ -120,26 +138,29 @@ public class GraphView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        mGraphRect.left = getPaddingLeft();
-        mGraphRect.right = getRight()-getPaddingRight();
-        mGraphRect.top = getPaddingTop();
-        mGraphRect.bottom = getBottom()-getPaddingBottom();
+        mGraphRect = canvas.getClipBounds();
+        mGraphRect.left += getPaddingLeft();
+        mGraphRect.right -= getPaddingRight();
+        mGraphRect.top += getPaddingTop();
+        mGraphRect.bottom -= getPaddingBottom();
         getGraphBackground().setBounds(mGraphRect);
         getGraphBackground().draw(canvas);
         Log.d(TAG, "Graph Width = "+mGraphRect.width());
+        float widthCounter = 0;
         if (getBarCount() != 0){
-            int barWidth = mGraphRect.width()/getBarCount();
+            float barWidth = (float) mGraphRect.width()/getBarCount();
             Log.d(TAG, "Bar count = "+getBarCount());
             Log.d(TAG, "Bar Width = "+barWidth);
             for (int i=0; i<getBarCount(); i++){
                 mBarRect.left = mBarRect.right = mBarRect.top = mBarRect.bottom  = 0;
 
-                mBarRect.left = mGraphRect.left + i*barWidth;
-                mBarRect.right = mGraphRect.left + i*barWidth + barWidth;
+                mBarRect.left = (int) (mGraphRect.left + i*barWidth);
+                mBarRect.right = (int) (mGraphRect.left + i*barWidth + barWidth);
                 mBarRect.top = mGraphRect.top;
                 mBarRect.bottom = mGraphRect.bottom;
                 mBarRects.add(mBarRect);
-                Log.d(TAG, "Bar("+i+") Width = "+mBarRect.width());
+                widthCounter += mBarRect.width();
+                Log.d(TAG, "Bar("+i+") Width = "+widthCounter);
                 if (barPadding == 0 && (barPaddingLeft != 0 || barPaddingRight != 0 ||
                                 barPaddingTop != 0  || barPaddingBottom != 0)){
                     mBarRect.left += barPaddingLeft;
