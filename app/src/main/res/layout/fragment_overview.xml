@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/container">
+    android:id="@+id/container"
+    android:background="#fafafa"
+    android:clickable="true">
 
     <android.support.constraint.Guideline
         android:id="@+id/top_guideline"
@@ -126,14 +128,14 @@
         app:layout_constraintEnd_toEndOf="@+id/text_end_guideline"
         app:layout_constraintTop_toTopOf="@+id/text_top_guideline"
         app:layout_constraintBottom_toBottomOf="@+id/text_bottom_guideline"
-        android:weightSum="5">
+        android:weightSum="6">
         <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/number_by_day"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="3"
+            android:layout_weight="2"
             android:gravity="center"
-            android:text="За сутки"
-            android:textStyle="bold"
+            android:text="0"
             android:maxLines="1"
             android:textColor="@android:color/white"
             app:autoSizeTextType="uniform"
@@ -142,13 +144,14 @@
             android:id="@+id/by_day"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="2"
+            android:layout_weight="4"
             android:gravity="center"
-            android:text="0 тонн"
+            android:textStyle="bold"
             android:maxLines="1"
-            android:textColor="@android:color/white"
+            android:textColor="#dcffffff"
             app:autoSizeTextType="uniform"
-            app:autoSizeStepGranularity="4sp" />
+            app:autoSizeMinTextSize="10sp"
+            app:autoSizeStepGranularity="2sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -159,16 +162,16 @@
         app:layout_constraintEnd_toEndOf="@+id/text_center_guideline"
         app:layout_constraintTop_toTopOf="@+id/second_text_top_guideline"
         app:layout_constraintBottom_toBottomOf="@+id/second_text_bottom_guideline"
-        android:weightSum="4">
+        android:weightSum="5">
         <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/number_by_working_day"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
-            android:layout_weight="3"
+            android:layout_weight="2"
             android:gravity="end"
-            android:text="За смену"
-            android:textStyle="bold"
+            android:text="0"
             android:maxLines="1"
             android:textColor="@android:color/white"
             app:autoSizeTextType="uniform"
@@ -179,12 +182,13 @@
             android:layout_height="match_parent"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
-            android:layout_weight="1"
+            android:layout_weight="3"
             android:gravity="end"
-            android:text="0 тонн"
+            android:textStyle="bold"
             android:maxLines="1"
-            android:textColor="@android:color/white"
+            android:textColor="#dcffffff"
             app:autoSizeTextType="uniform"
+            app:autoSizeMinTextSize="8sp"
             app:autoSizeStepGranularity="2sp" />
     </LinearLayout>
 
@@ -206,16 +210,16 @@
         app:layout_constraintEnd_toEndOf="@+id/text_end_guideline"
         app:layout_constraintTop_toTopOf="@+id/second_text_top_guideline"
         app:layout_constraintBottom_toBottomOf="@+id/second_text_bottom_guideline"
-        android:weightSum="4">
+        android:weightSum="5">
         <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/number_by_previous_working_day"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
-            android:layout_weight="3"
+            android:layout_weight="2"
             android:gravity="start"
-            android:text="За прошлую"
-            android:textStyle="bold"
+            android:text="0"
             android:maxLines="1"
             android:textColor="@android:color/white"
             app:autoSizeTextType="uniform"
@@ -226,12 +230,13 @@
             android:layout_height="match_parent"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
-            android:layout_weight="1"
+            android:layout_weight="3"
             android:gravity="start"
-            android:text="0 тонн"
+            android:textStyle="bold"
             android:maxLines="1"
-            android:textColor="@android:color/white"
+            android:textColor="#dcffffff"
             app:autoSizeTextType="uniform"
+            app:autoSizeMinTextSize="8sp"
             app:autoSizeStepGranularity="2sp" />
     </LinearLayout>
 

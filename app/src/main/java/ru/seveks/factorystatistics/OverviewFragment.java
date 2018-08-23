@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.Interpolator;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -49,9 +48,21 @@ public class OverviewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_overview, container, false);
 
-        animateValues(weight_1, (TextView)view.findViewById(R.id.by_day));
-        animateValues(weight_2, (TextView)view.findViewById(R.id.by_working_day));
-        animateValues(weight_3, (TextView)view.findViewById(R.id.by_previous_working_day));
+        animateValues(weight_1, (TextView)view.findViewById(R.id.number_by_day));
+        animateValues(weight_2, (TextView)view.findViewById(R.id.number_by_working_day));
+        animateValues(weight_3, (TextView)view.findViewById(R.id.number_by_previous_working_day));
+
+        String full_day = getContext().getResources().getQuantityString(R.plurals.weight, weight_1)+" "
+                        + getContext().getResources().getString(R.string.full_day);
+        ((TextView) view.findViewById(R.id.by_day)).setText(full_day);
+
+        String this_day = getContext().getResources().getQuantityString(R.plurals.weight, weight_2)+" "
+                        + getContext().getResources().getString(R.string.this_day);
+        ((TextView) view.findViewById(R.id.by_working_day)).setText(this_day);
+
+        String previous_day = getContext().getResources().getQuantityString(R.plurals.weight, weight_3)+" "
+                            + getContext().getResources().getString(R.string.previous_day);
+        ((TextView) view.findViewById(R.id.by_previous_working_day)).setText(previous_day);
 
         final GraphView graphView = view.findViewById(R.id.graph);
         final ArrayList<Float> values = new ArrayList<>();
@@ -98,7 +109,7 @@ public class OverviewFragment extends Fragment {
         return view;
     }
 
-    private void animateValues(int value, final TextView view) {
+    private void animateValues(final int value, final TextView number_text) {
         ValueAnimator animator = ValueAnimator.ofInt(0, value);
         animator.setDuration(1250);
         animator.setStartDelay(200);
@@ -106,9 +117,7 @@ public class OverviewFragment extends Fragment {
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             public void onAnimationUpdate(ValueAnimator animation) {
                 if(getContext() != null)
-                    view.setText(getContext().getResources().getQuantityString(R.plurals.weight,
-                                    (int)animation.getAnimatedValue(),
-                                    (int)animation.getAnimatedValue()));
+                    number_text.setText(animation.getAnimatedValue().toString());
             }
         });
         animator.start();
