@@ -167,7 +167,7 @@ public class GraphView extends View {
                 mPaint.setColor(Color.parseColor("#101010"));
                 mPaint.setTextAlign(Paint.Align.CENTER);
                 mPaint.setTextSize(textSize);
-                canvas.drawText(String.valueOf(i), mTextRect.centerX(), mTextRect.centerY(), mPaint);
+                canvas.drawText(String.valueOf(i), mTextRect.centerX(), mTextRect.bottom, mPaint);
                 //canvas.drawRect(mBarRect, mPaint);
 
                 mBarRect.bottom = barRectBottom;

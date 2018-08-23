@@ -261,7 +261,7 @@
                 app:barPaddingLeft="2dp"
                 app:barPaddingRight="2dp"
                 app:barPaddingTop="5dp"
-                app:textSize="10sp"/>
+                app:textSize="20sp" />
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView

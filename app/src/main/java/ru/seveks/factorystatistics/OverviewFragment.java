@@ -79,8 +79,6 @@ public class OverviewFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            setSharedElementEnterTransition(TransitionInflater.from(getContext()).inflateTransition(android.R.transition.move));
 
         if (getActivity() != null)
             ((MainActivity)getActivity()).setStatusBarTranslucent(true, Color.WHITE);
@@ -101,7 +99,7 @@ public class OverviewFragment extends Fragment {
 
         final GraphView graphView = view.findViewById(R.id.graph);
         final ArrayList<Float> values = new ArrayList<>();
-        for (int i=0; i<6; i++){
+        for (int i=0; i<24; i++){
             values.add(new Random().nextFloat() % 136);
         }
         graphView.setBarValues(values, true);
@@ -113,10 +111,6 @@ public class OverviewFragment extends Fragment {
             if(getActivity().getSupportFragmentManager().findFragmentByTag("charts") == null) {
                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                 Fragment hoursFragment = HoursFragment.newInstance(values);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    ft.addSharedElement( graphView, graphView.getTransitionName());
-                    hoursFragment.setSharedElementEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(android.R.transition.move));
-                }
                 ft.addToBackStack("charts");
                 ft.add(R.id.fragments_container, hoursFragment, "charts");
                 ft.commit();
