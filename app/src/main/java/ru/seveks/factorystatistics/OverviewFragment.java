@@ -25,6 +25,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
@@ -50,7 +51,7 @@ public class OverviewFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    int weight_1 = 42, weight_2 = 10, weight_3 = 15;
+    int weight_1 = 80, weight_2 = 10, weight_3 = 15;
     //private OnFragmentInteractionListener mListener;
 
     public OverviewFragment() {
@@ -112,8 +113,10 @@ public class OverviewFragment extends Fragment {
             if(getActivity().getSupportFragmentManager().findFragmentByTag("charts") == null) {
                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                 Fragment hoursFragment = HoursFragment.newInstance(values);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    ft.addSharedElement( graphView, graphView.getTransitionName());
                     hoursFragment.setSharedElementEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(android.R.transition.move));
+                }
                 ft.addToBackStack("charts");
                 ft.add(R.id.fragments_container, hoursFragment, "charts");
                 ft.commit();
@@ -145,13 +148,14 @@ public class OverviewFragment extends Fragment {
 
     private void animateValues(int value, final TextView view) {
         ValueAnimator animator = ValueAnimator.ofInt(0, value);
-        animator.setDuration(1500);
-        animator.setInterpolator(new DecelerateInterpolator());
+        animator.setDuration(1250);
+        animator.setInterpolator(new AccelerateInterpolator());
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             public void onAnimationUpdate(ValueAnimator animation) {
-                view.setText(getContext().getResources().getQuantityString(R.plurals.weight,
-                                (int)animation.getAnimatedValue(),
-                                (int)animation.getAnimatedValue()));
+                if(getContext() != null)
+                    view.setText(getContext().getResources().getQuantityString(R.plurals.weight,
+                                    (int)animation.getAnimatedValue(),
+                                    (int)animation.getAnimatedValue()));
             }
         });
         animator.start();
@@ -173,7 +177,6 @@ public class OverviewFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }*/
-
     }
 
     @Override
