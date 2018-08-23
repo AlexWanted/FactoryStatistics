@@ -112,7 +112,7 @@ public class OverviewFragment extends Fragment {
     private void animateValues(final int value, final TextView number_text) {
         ValueAnimator animator = ValueAnimator.ofInt(0, value);
         animator.setDuration(1250);
-        animator.setStartDelay(200);
+        animator.setStartDelay(100);
         animator.setInterpolator(new DecelerateInterpolator());
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             public void onAnimationUpdate(ValueAnimator animation) {
