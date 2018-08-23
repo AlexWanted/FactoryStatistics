@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -16,10 +17,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        Fragment overviewFragment = new OverviewFragment();
-        ft.add(R.id.fragments_container, overviewFragment, OVERVIEW_FRAGMENT);
-        ft.commit();
+
+        if(getSupportFragmentManager().findFragmentByTag(OVERVIEW_FRAGMENT) == null) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            Fragment overviewFragment = OverviewFragment.newInstance();
+            ft.add(R.id.fragments_container, overviewFragment, OVERVIEW_FRAGMENT);
+            ft.commit();
+        }
     }
 
     /**
