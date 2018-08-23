@@ -99,11 +99,11 @@ public class OverviewFragment extends Fragment {
         animateValues(weight_3, (TextView)view.findViewById(R.id.by_previous_working_day));
 
         final GraphView graphView = view.findViewById(R.id.graph);
-        final ArrayList<Double> values = new ArrayList<>();
-        for (int i=0; i<24; i++){
-            values.add(new Random().nextDouble() % 136);
+        final ArrayList<Float> values = new ArrayList<>();
+        for (int i=0; i<6; i++){
+            values.add(new Random().nextFloat() % 136);
         }
-        graphView.setBarValues(values);
+        graphView.setBarValues(values, true);
 
         graphView.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -111,12 +111,11 @@ public class OverviewFragment extends Fragment {
             public void onClick(View v) {
             if(getActivity().getSupportFragmentManager().findFragmentByTag("charts") == null) {
                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                ft.addSharedElement( graphView, graphView.getTransitionName());
                 Fragment hoursFragment = HoursFragment.newInstance(values);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                     hoursFragment.setSharedElementEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(android.R.transition.move));
                 ft.addToBackStack("charts");
-                ft.replace(R.id.fragments_container, hoursFragment, "charts");
+                ft.add(R.id.fragments_container, hoursFragment, "charts");
                 ft.commit();
             }
             }

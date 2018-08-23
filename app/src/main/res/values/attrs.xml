@@ -6,5 +6,9 @@
         <attr name="barPaddingRight" format="dimension"/>
         <attr name="barPaddingTop" format="dimension"/>
         <attr name="barPaddingBottom" format="dimension"/>
+        <attr name="backgroundGraph" format="reference|color"/>
+        <attr name="backgroundBar" format="reference|color"/>
+        <attr name="bar" format="reference|color"/>
+        <attr name="textSize" format="dimension"/>
     </declare-styleable>
 </resources>

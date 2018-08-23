@@ -39,13 +39,13 @@ public class HoursFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private ArrayList<Double> dataset;
+    private ArrayList<Float> dataset;
 
     public HoursFragment() {
         // Required empty public constructor
     }
 
-    public static HoursFragment newInstance(ArrayList<Double> data) {
+    public static HoursFragment newInstance(ArrayList<Float> data) {
         Bundle args = new Bundle();
         args.putSerializable("data", data);
         HoursFragment fragment = new HoursFragment();
@@ -65,7 +65,7 @@ public class HoursFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        dataset = (ArrayList<Double>) getArguments().getSerializable("data");
+        dataset = (ArrayList<Float>) getArguments().getSerializable("data");
         /*if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -77,7 +77,9 @@ public class HoursFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_hours, container, false);
-        ((GraphView)view.findViewById(R.id.graph)).setBarValues(dataset);
+        GraphView graphView = view.findViewById(R.id.graph);
+        graphView.setBarValues(dataset, false);
+
 
         /*ShapeOfView shapeOfView = view.findViewById(R.id.myShape);
         shapeOfView.setClipPathCreator(new ClipPathManager.ClipPathCreator() {
