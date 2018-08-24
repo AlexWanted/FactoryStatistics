@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
-public class OverviewModel {
+public class OverviewModel implements Serializable {
 
     public OverviewModel() {
     }
