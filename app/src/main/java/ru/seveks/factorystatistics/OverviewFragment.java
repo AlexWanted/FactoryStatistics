@@ -68,13 +68,15 @@ public class OverviewFragment extends Fragment {
         graphView = view.findViewById(R.id.graph);
 
         if (savedInstanceState != null) {
-            presenter = (OverviewPresenter)savedInstanceState.getParcelable(PRESENTER_KEY);
-            presenter.attachFragment(this);
-            by_day.setText(getContext().getResources().getString(R.string.tonne, presenter.getWeight_1()));
-            by_working_day.setText(getContext().getResources().getString(R.string.tonne, presenter.getWeight_2()));
-            by_previous_working_day.setText(getContext().getResources().getString(R.string.tonne, presenter.getWeight_3()));
-            if (graphView != null)
-                graphView.setBarValues(presenter.getValues(), false);
+            presenter = savedInstanceState.getParcelable(PRESENTER_KEY);
+            if (presenter != null && getContext() != null) {
+                presenter.attachFragment(this);
+                by_day.setText(getContext().getResources().getString(R.string.tonne, presenter.getWeight_1()));
+                by_working_day.setText(getContext().getResources().getString(R.string.tonne, presenter.getWeight_2()));
+                by_previous_working_day.setText(getContext().getResources().getString(R.string.tonne, presenter.getWeight_3()));
+                if (graphView != null)
+                    graphView.setBarValues(presenter.getValues(), false);
+            }
         } else {
             OverviewModel model = new OverviewModel();
             presenter = new OverviewPresenter(model);

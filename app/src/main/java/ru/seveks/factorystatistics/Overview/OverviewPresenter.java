@@ -17,6 +17,7 @@ public class OverviewPresenter implements Parcelable {
 
     public OverviewPresenter(OverviewModel model) {
         this.model = model;
+        this.values = new ArrayList<>();
     }
 
     protected OverviewPresenter(Parcel in) {
