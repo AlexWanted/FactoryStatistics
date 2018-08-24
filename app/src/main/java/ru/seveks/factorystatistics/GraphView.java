@@ -9,6 +9,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
@@ -32,7 +33,7 @@ public class GraphView extends View {
 
     private static final String TAG = GraphView.class.getSimpleName();
     private Context mContext;
-    private Paint mTextPaint;
+    private Paint mTextPaint, mShadowPaint;
     private Rect mGraphRect, mBarRect, viewRect;
     private ArrayList<Float> barValues = new ArrayList<>();
     private ArrayList<Rect> mBarRects = new ArrayList<>();
@@ -76,6 +77,7 @@ public class GraphView extends View {
     private void init(Context context, AttributeSet attrs){
         mContext = context;
         mTextPaint = new Paint();
+        mShadowPaint = new Paint();
         viewRect = new Rect();
         mGraphRect = new Rect();
         mBarRect = new Rect();
@@ -85,6 +87,8 @@ public class GraphView extends View {
         mTextPaint.setTextAlign(Paint.Align.CENTER);
         mTextPaint.setFlags(Paint.LINEAR_TEXT_FLAG | Paint.SUBPIXEL_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG
             | Paint.DITHER_FLAG | Paint.FAKE_BOLD_TEXT_FLAG);
+
+        mShadowPaint.setColor(Color.BLACK);
 
         ArrayList<Float> values = new ArrayList<>();
         values.add(0f);
@@ -142,7 +146,6 @@ public class GraphView extends View {
             }
             textSize = a.getDimension(R.styleable.GraphView_textSize, 0);
             textColor = a.getColor(R.styleable.GraphView_textColor, ContextCompat.getColor(context, R.color.colorPrimaryDark));
-            //Log.d(TAG, "textSize = "+textSize);
             a.recycle();
         }
 
@@ -237,6 +240,10 @@ public class GraphView extends View {
                 mBarRect.top -= selectedBarPadding*2;
                 mBarRect.bottom += selectedBarPadding*2;
 
+                mShadowPaint.setShadowLayer((float)(selectedBarPadding*selectedBarPadding), 0, 0, Color.BLACK);
+                canvas.drawRect(mBarRect, mShadowPaint);
+
+
                 float barRatio = barValues.get(mSelectedBar) / maxBarValue;
                 int barBottom = mBarRect.bottom;
                 mBarRect.bottom = mBarRect.top + (int)(mBarRect.height() * (1-barRatio));
@@ -257,7 +264,6 @@ public class GraphView extends View {
         int mX = (int)event.getX();
         int mY = (int)event.getY();
         if (viewRect.contains(viewRect.centerX(),mY+viewRect.top)) {
-            Log.d(TAG, mX+" "+mY+" "+viewRect.toString());
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                 case MotionEvent.ACTION_MOVE: {
@@ -270,11 +276,10 @@ public class GraphView extends View {
                 }
                 case MotionEvent.ACTION_CANCEL:
                 case MotionEvent.ACTION_UP: {
-                    if (event.getEventTime()-event.getDownTime() < 100){
+                    if (event.getEventTime()-event.getDownTime() < 80){
                         performClick();
-                    } else {
-                        setSelectedBar(-1, true);
                     }
+                    setSelectedBar(-1, true);
                     break;
                 }
             }
@@ -298,7 +303,7 @@ public class GraphView extends View {
 
     public void setSelectedBar(final int index, boolean animate){
         long animationDuration = 50;
-        if (getSelectedBar() != index) {
+        if (mSelectedBar != index) {
             if (index > -1 && index < getBarCount()) {
                 if (animate) {
                     AnimatorSet selectBarAnimatorSet = new AnimatorSet();
@@ -316,11 +321,13 @@ public class GraphView extends View {
                             public void onAnimationEnd(Animator animation) {
                                 mSelectedBar = -1;
                                 setSelectedBar(index, true);
+                                Log.d(TAG,"setSelectedBar: deselected bar");
                             }
                         });
                         scaleAnimator.setDuration(animationDuration);
                         scaleAnimator.start();
                     } else {
+                        mSelectedBar = index;
                         ValueAnimator scaleAnimator = ValueAnimator.ofFloat(0, 5);
                         scaleAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                             @Override
@@ -331,7 +338,7 @@ public class GraphView extends View {
                         });
                         scaleAnimator.setDuration(animationDuration);
                         scaleAnimator.start();
-                        mSelectedBar = index;
+                        Log.d(TAG,"setSelectedBar: selected bar "+index);
                     }
                 } else {
                     mSelectedBar = index;
@@ -360,7 +367,6 @@ public class GraphView extends View {
         if (animate) {
             float animateFrom = maxBarValue;
             float animateTo = value;
-            Log.d(TAG, animateFrom + " " + animateTo);
             PropertyValuesHolder propertyMaxBarValue = PropertyValuesHolder.ofFloat("MaxBarValue", animateFrom, animateTo);
             ValueAnimator animator = new ValueAnimator();
             animator.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -373,6 +379,7 @@ public class GraphView extends View {
                 }
             });
             animator.setDuration(1250).start();
+            Log.d(TAG, "setMaxBarValue "+value);
         } else {
             this.maxBarValue = value;
             invalidate();
