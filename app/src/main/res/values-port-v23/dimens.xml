@@ -4,8 +4,8 @@
     <dimen name="header_bottom_guideline_percent">0.36</dimen>
     <dimen name="card_top_guideline_percent">0.34</dimen>
 
-    <dimen name="text_start_guideline_percent">0.2</dimen>
-    <dimen name="text_end_guideline_percent">0.8</dimen>
+    <dimen name="text_start_guideline_percent">0.15</dimen>
+    <dimen name="text_end_guideline_percent">0.85</dimen>
     <dimen name="text_center_vertical_guideline_percent">0.5</dimen>
     <dimen name="text_top_guideline_percent">0.05</dimen>
     <dimen name="text_center_horizontal_guideline_percent">0.18</dimen>

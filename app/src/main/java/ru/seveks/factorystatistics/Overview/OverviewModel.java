@@ -13,6 +13,7 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -50,7 +51,7 @@ public class OverviewModel {
             FTPClient ftpClient;
             try {
                 ftpClient = new FTPClient();
-                ftpClient.connect("192.168.0.1");
+                ftpClient.connect("78.107.253.212");
 
                 if(ftpClient.login("korma", "3790")) {
                     FTPFile[] ftpFiles = ftpClient.listFiles("/USB_DISK/korma/");
@@ -62,7 +63,7 @@ public class OverviewModel {
                             try {
                                 reader = new DBFReader(inputStream);
                                 DBFRow row;
-                                int day = new Random(System.currentTimeMillis()).nextInt(31);
+                                int day = new Random(System.currentTimeMillis()).nextInt(13);
                                 Log.d("DB", "Day "+(day+1));
                                 while ((row = reader.nextRow()) != null) {
                                     if (row.getInt("DAY") == day+1) {
@@ -76,6 +77,8 @@ public class OverviewModel {
                                 }
                                 Log.d("DB", "Successfully parsed file");
                             } catch (Exception e) {
+                                for (int i = 0; i < 24; i++)
+                                    map.add(0f);
                                 Log.e("DB", "Failed to parsed file");
                             } finally {
                                 DBFUtils.close(reader);
@@ -84,13 +87,13 @@ public class OverviewModel {
                     }
                 } else {
                     for (int i = 0; i < 24; i++)
-                        map.add((float) i);
+                        map.add(0f);
                     Log.e("DB", "Failed to authorize");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
                 for (int i = 0; i < 24; i++)
-                    map.add((float) i);
+                    map.add(0f);
                 Log.e("DB", "Failed to connect");
             }
             return null;

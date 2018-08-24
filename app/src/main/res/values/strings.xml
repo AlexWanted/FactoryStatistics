@@ -9,7 +9,7 @@
     <string name="full_day">За сутки</string>
     <string name="this_day">За смену</string>
     <string name="previous_day">За прошлую</string>
-    <string name="tonne">%1$d т</string>
+    <string name="tonne">%1$.1f т</string>
     
     <plurals name="weight">
         <item quantity="zero">%1$d тонн</item>
