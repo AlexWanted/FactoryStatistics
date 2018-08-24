@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -27,7 +28,7 @@ public class GraphView extends View {
 
     private static final String TAG = GraphView.class.getSimpleName();
     private Context mContext;
-    private Paint mPaint;
+    private Paint mTextPaint;
     private Rect mGraphRect, mBarRect, mTextRect;
     private ArrayList<Float> barValues = new ArrayList<>();
     private ArrayList<Rect> mBarRects = new ArrayList<>();
@@ -68,15 +69,15 @@ public class GraphView extends View {
 
     private void init(Context context, AttributeSet attrs){
         mContext = context;
-        mPaint = new Paint();
+        mTextPaint = new Paint();
         mGraphRect = new Rect();
         mBarRect = new Rect();
         mTextRect = new Rect();
 
-        mPaint.setColor(Color.parseColor("#101010"));
-        mPaint.setTextAlign(Paint.Align.CENTER);
-        mPaint.setFlags(Paint.LINEAR_TEXT_FLAG);
-        mPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
+
+        mTextPaint.setTextAlign(Paint.Align.CENTER);
+        mTextPaint.setFlags(Paint.LINEAR_TEXT_FLAG | Paint.SUBPIXEL_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG
+            | Paint.DITHER_FLAG | Paint.FAKE_BOLD_TEXT_FLAG);
 
         ArrayList<Float> values = new ArrayList<>();
         values.add(1f);
@@ -131,13 +132,16 @@ public class GraphView extends View {
                 setGraphBackgroundColor(ContextCompat.getColor(context, R.color.colorTransparent));
             }
             textSize = a.getDimension(R.styleable.GraphView_textSize, 0);
-
+            textColor = a.getColor(R.styleable.GraphView_textColor, ContextCompat.getColor(context, R.color.colorPrimaryDark));
+            //Log.d(TAG, "textSize = "+textSize);
+            a.recycle();
         }
 
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
+        //Берём размер канваса и присваиваем его rect'y графа, применяем паддинг и рисуем фон
         canvas.getClipBounds(mGraphRect);
         mGraphRect.left += getPaddingLeft();
         mGraphRect.right -= getPaddingRight();
@@ -145,16 +149,23 @@ public class GraphView extends View {
         mGraphRect.bottom -= getPaddingBottom();
         getGraphBackground().setBounds(mGraphRect);
         getGraphBackground().draw(canvas);
+
         if (getBarCount() != 0){
             float barWidth = (float) mGraphRect.width()/getBarCount();
             for (int i=0; i<getBarCount(); i++){
-                mBarRect.left = mBarRect.right = mBarRect.top = mBarRect.bottom  = 0;
+                //Обнуляем rect столбца
+                //mBarRect.left = mBarRect.right = mBarRect.top = mBarRect.bottom  = 0;
 
+                //Задаём rect столбца
                 mBarRect.left = (int) (mGraphRect.left + i*barWidth);
                 mBarRect.right = (int) (mGraphRect.left + i*barWidth + barWidth);
                 mBarRect.top = mGraphRect.top;
                 mBarRect.bottom = mGraphRect.bottom;
+
+                //Сохраняем границы для того чтобы определить на какой прямоугольник навели палец в TouchEvent
                 mBarRects.add(mBarRect);
+
+                //Применяем padding к rect'y столбца
                 if (barPadding == 0 && (barPaddingLeft != 0 || barPaddingRight != 0 ||
                                 barPaddingTop != 0  || barPaddingBottom != 0)){
                     mBarRect.left += barPaddingLeft;
@@ -168,27 +179,34 @@ public class GraphView extends View {
                     mBarRect.bottom -= barPadding;
                 }
 
+
+                //Если размер текста больше ширины столбца (с учётом padding), размер текста
+                //будет равен ширине столбца
                 if (textSize > mBarRect.width()) textSize = mBarRect.width();
 
+                //Задаём rect текста
                 mTextRect.top = (int) (mBarRect.bottom-textSize);
                 mTextRect.bottom = mBarRect.bottom;
                 mTextRect.left = mBarRect.left;
                 mTextRect.right = mBarRect.right;
 
+                //Поднимаем низ столбца к топу текста, вычисляем высоту столбца и рисуем лишь
+                // ту часть фона столбца, которая видна пользователю
                 mBarRect.bottom = mTextRect.top;
-                int barHeight = mBarRect.bottom-mBarRect.top;
                 float barRatio = barValues.get(i) / maxBarValue;
-                mBarRect.bottom -= barHeight*barRatio;
+                mBarRect.bottom -= mBarRect.height()*barRatio;
                 getBarBackground().setBounds(mBarRect);
                 getBarBackground().draw(canvas);
 
+                //Задаём размер текста краске, задаём центр отрисовки и рисуем текст
+                // с флагами заданными в init
+                mTextPaint.setTextSize(textSize);
+                mTextPaint.setColor(textColor);
+                canvas.drawText(String.valueOf(i), mTextRect.centerX(), mTextRect.bottom, mTextPaint);
 
-                mPaint.setTextSize(textSize);
-                canvas.drawText(String.valueOf(i), mTextRect.centerX(), mTextRect.bottom, mPaint);
-
+                //Вычисляем размер столбца и рисуем его
                 mBarRect.bottom = mTextRect.top;
-                mBarRect.top += (1-barRatio)*barHeight;
-
+                mBarRect.top += (1-barRatio)*mBarRect.height();
                 getBar().setBounds(mBarRect);
                 getBar().draw(canvas);
 
@@ -198,7 +216,7 @@ public class GraphView extends View {
     }
 
     /**
-     * @return возвращает количество пиков
+     * @return возвращает количество столбцов
      */
     public int getBarCount(){
         return barValues.size();
@@ -282,7 +300,6 @@ public class GraphView extends View {
             this.barValues = localBarValues;
             invalidate();
         }
-        //invalidate();
     }
 
     public Drawable getGraphBackground() {
@@ -295,6 +312,14 @@ public class GraphView extends View {
 
     public Drawable getBar() {
         return mBar;
+    }
+
+    public float getTextSize() {
+        return textSize;
+    }
+
+    public int getTextColor(){
+        return textColor;
     }
 
     private void setGraphBackground(Drawable resource){
@@ -368,11 +393,11 @@ public class GraphView extends View {
         setBarBackground(drawable);
     }
 
-    public float getTextSize() {
-        return textSize;
-    }
-
     public void setTextSize(float textSize) {
         this.textSize = textSize;
+    }
+
+    public void setTextColor(@ColorInt int color){
+        this.textColor = color;
     }
 }
