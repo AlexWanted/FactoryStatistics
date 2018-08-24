@@ -1,12 +1,14 @@
 package ru.seveks.factorystatistics;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
@@ -17,8 +19,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewPropertyAnimator;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AnimationSet;
 import android.view.animation.Interpolator;
 
 import java.util.ArrayList;
@@ -27,8 +32,8 @@ public class GraphView extends View {
 
     private static final String TAG = GraphView.class.getSimpleName();
     private Context mContext;
-    private Paint mPaint;
-    private Rect mGraphRect, mBarRect, mTextRect;
+    private Paint mTextPaint;
+    private Rect mGraphRect, mBarRect, mTextRect, viewRect;
     private ArrayList<Float> barValues = new ArrayList<>();
     private ArrayList<Rect> mBarRects = new ArrayList<>();
     private Drawable mBar;
@@ -38,6 +43,8 @@ public class GraphView extends View {
     /*private int mBarResource;
     private int mBarBackgroundResource;
     private int mGraphBackgroundResource;*/
+    private int mSelectedBar = -1;
+    private float selectedBarPadding = 0;
     private float barPadding = 0;
     private float barPaddingLeft = 0;
     private float barPaddingRight = 0;
@@ -68,41 +75,43 @@ public class GraphView extends View {
 
     private void init(Context context, AttributeSet attrs){
         mContext = context;
-        mPaint = new Paint();
+        mTextPaint = new Paint();
+        viewRect = new Rect();
         mGraphRect = new Rect();
         mBarRect = new Rect();
         mTextRect = new Rect();
 
-        mPaint.setColor(Color.parseColor("#101010"));
-        mPaint.setTextAlign(Paint.Align.CENTER);
-        mPaint.setFlags(Paint.LINEAR_TEXT_FLAG);
-        mPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
+
+
+        mTextPaint.setTextAlign(Paint.Align.CENTER);
+        mTextPaint.setFlags(Paint.LINEAR_TEXT_FLAG | Paint.SUBPIXEL_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG
+            | Paint.DITHER_FLAG | Paint.FAKE_BOLD_TEXT_FLAG);
 
         ArrayList<Float> values = new ArrayList<>();
-        values.add(1f);
-        values.add(2f);
-        values.add(4f);
-        values.add(8f);
-        values.add(11f);
-        values.add(38f);
-        values.add(35f);
-        values.add(2f);
-        values.add(59f);
-        values.add(10f);
-        values.add(1f);
-        values.add(44f);
-        values.add(66f);
-        values.add(17f);
-        values.add(11f);
-        values.add(43f);
-        values.add(21f);
-        values.add(64f);
-        values.add(12f);
-        values.add(33f);
-        values.add(21f);
-        values.add(32f);
-        values.add(34f);
-        values.add(41f);
+        values.add(0f);
+        values.add(0f);
+        values.add(0f);
+        values.add(0f);
+        values.add(0f);
+        values.add(0f);
+        values.add(0f);
+        values.add(0f);
+        values.add(0f);
+        values.add(0f);
+        values.add(0f);
+        values.add(0f);
+        values.add(0f);
+        values.add(0f);
+        values.add(0f);
+        values.add(0f);
+        values.add(0f);
+        values.add(0f);
+        values.add(0f);
+        values.add(0f);
+        values.add(0f);
+        values.add(0f);
+        values.add(0f);
+        values.add(0f);
         setBarValues(values, false);
 
         barPadding = 0;
@@ -110,6 +119,8 @@ public class GraphView extends View {
         barPaddingRight = 0;
         barPaddingTop = 0;
         barPaddingBottom = 0;
+
+        setClickable(true);
 
         if (context != null && attrs != null){
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.GraphView);
@@ -131,14 +142,18 @@ public class GraphView extends View {
                 setGraphBackgroundColor(ContextCompat.getColor(context, R.color.colorTransparent));
             }
             textSize = a.getDimension(R.styleable.GraphView_textSize, 0);
-
+            textColor = a.getColor(R.styleable.GraphView_textColor, ContextCompat.getColor(context, R.color.colorPrimaryDark));
+            //Log.d(TAG, "textSize = "+textSize);
+            a.recycle();
         }
 
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.getClipBounds(mGraphRect);
+        //Берём размер канваса и присваиваем его rect'y графа, применяем паддинг и рисуем фон
+        canvas.getClipBounds(viewRect);
+        mGraphRect = viewRect;
         mGraphRect.left += getPaddingLeft();
         mGraphRect.right -= getPaddingRight();
         mGraphRect.top += getPaddingTop();
@@ -148,13 +163,23 @@ public class GraphView extends View {
         if (getBarCount() != 0){
             float barWidth = (float) mGraphRect.width()/getBarCount();
             for (int i=0; i<getBarCount(); i++){
-                mBarRect.left = mBarRect.right = mBarRect.top = mBarRect.bottom  = 0;
+                //Обнуляем rect столбца
+                //mBarRect.left = mBarRect.right = mBarRect.top = mBarRect.bottom  = 0;
 
+                //Задаём rect столбца
                 mBarRect.left = (int) (mGraphRect.left + i*barWidth);
                 mBarRect.right = (int) (mGraphRect.left + i*barWidth + barWidth);
                 mBarRect.top = mGraphRect.top;
                 mBarRect.bottom = mGraphRect.bottom;
-                mBarRects.add(mBarRect);
+
+                //Сохраняем границы для того чтобы определить на какой прямоугольник навели палец в TouchEvent
+                mBarRects.get(i).left = mBarRect.left;
+                mBarRects.get(i).right = mBarRect.right;
+                mBarRects.get(i).top = mBarRect.top;
+                mBarRects.get(i).bottom = mBarRect.bottom;
+
+                //Применяем padding к rect'y столбца
+
                 if (barPadding == 0 && (barPaddingLeft != 0 || barPaddingRight != 0 ||
                                 barPaddingTop != 0  || barPaddingBottom != 0)){
                     mBarRect.left += barPaddingLeft;
@@ -168,37 +193,94 @@ public class GraphView extends View {
                     mBarRect.bottom -= barPadding;
                 }
 
+
+                //Если размер текста больше ширины столбца (с учётом padding), размер текста
+                //будет равен ширине столбца
                 if (textSize > mBarRect.width()) textSize = mBarRect.width();
 
+                //Задаём rect текста
                 mTextRect.top = (int) (mBarRect.bottom-textSize);
                 mTextRect.bottom = mBarRect.bottom;
                 mTextRect.left = mBarRect.left;
                 mTextRect.right = mBarRect.right;
 
+                //Поднимаем низ столбца к топу текста, вычисляем высоту столбца и рисуем лишь
+                // ту часть фона столбца, которая видна пользователю
+
                 mBarRect.bottom = mTextRect.top;
-                int barHeight = mBarRect.bottom-mBarRect.top;
                 float barRatio = barValues.get(i) / maxBarValue;
-                mBarRect.bottom -= barHeight*barRatio;
+                mBarRect.bottom -= mBarRect.height()*barRatio;
+
+                if (i == mSelectedBar){
+                    mBarRect.left -= selectedBarPadding;
+                    mBarRect.right += selectedBarPadding;
+                    mBarRect.top -= selectedBarPadding;
+                    mBarRect.bottom += selectedBarPadding;
+                }
                 getBarBackground().setBounds(mBarRect);
                 getBarBackground().draw(canvas);
 
+                //Задаём размер текста краске, задаём центр отрисовки и рисуем текст
+                // с флагами заданными в init
+                mTextPaint.setTextSize(textSize);
+                mTextPaint.setColor(textColor);
+                canvas.drawText(String.valueOf(i), mTextRect.centerX(), mTextRect.bottom, mTextPaint);
 
-                mPaint.setTextSize(textSize);
-                canvas.drawText(String.valueOf(i), mTextRect.centerX(), mTextRect.bottom, mPaint);
-
+                //Вычисляем размер столбца и рисуем его
                 mBarRect.bottom = mTextRect.top;
-                mBarRect.top += (1-barRatio)*barHeight;
+                mBarRect.top += (1-barRatio)*mBarRect.height();
+
+                if (i == mSelectedBar){
+                    mBarRect.top -= selectedBarPadding;
+                    mBarRect.bottom += selectedBarPadding;
+                }
 
                 getBar().setBounds(mBarRect);
-                getBar().draw(canvas);
+                if (getMaxBarValue() != 0) getBar().draw(canvas);
 
+                if (mSelectedBar == i){
+                    canvas.drawRect(mBarRect, mTextPaint);
+                }
 
             }
         }
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        int mX = (int)event.getX();
+        int mY = (int)event.getY();
+        if (viewRect.contains(viewRect.centerX(),mY+viewRect.top)) {
+            Log.d(TAG, mX+" "+mY+" "+viewRect.toString());
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                case MotionEvent.ACTION_MOVE: {
+                    for (int i = 0; i < mBarRects.size(); i++) {
+                        if (mX >= mBarRects.get(i).left && mX<= mBarRects.get(i).right){
+                            setSelectedBar(i, true);
+                        }
+                    }
+                    break;
+                }
+                case MotionEvent.ACTION_CANCEL:
+                case MotionEvent.ACTION_UP: {
+                    if (event.getEventTime()-event.getDownTime() < 100){
+                        performClick();
+                    } else {
+                        setSelectedBar(-1, true);
+                    }
+                    break;
+                }
+            }
+        } else {
+            setSelectedBar(-1, true);
+            return false;
+        }
+        return true;
+    }
+
     /**
-     * @return возвращает количество пиков
+     * @return возвращает количество столбцов
      */
     public int getBarCount(){
         return barValues.size();
@@ -206,6 +288,56 @@ public class GraphView extends View {
 
     public double getMaxBarValue(){
         return maxBarValue;
+    }
+
+    public void setSelectedBar(final int index, boolean animate){
+        long animationDuration = 50;
+        if (index > -1 && index < getBarCount() && getSelectedBar() != index) {
+            if (animate) {
+                AnimatorSet selectBarAnimatorSet = new AnimatorSet();
+                if (getSelectedBar() != -1){
+                    ValueAnimator scaleAnimator = ValueAnimator.ofFloat(5, 0);
+                    scaleAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                        @Override
+                        public void onAnimationUpdate(ValueAnimator animation) {
+                            selectedBarPadding = (float)animation.getAnimatedValue();
+                            invalidate();
+                        }
+                    });
+                    scaleAnimator.addListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            mSelectedBar = -1;
+                            setSelectedBar(index, true);
+                        }
+                    });
+                    scaleAnimator.setDuration(animationDuration);
+                    scaleAnimator.start();
+                } else {
+                    ValueAnimator scaleAnimator = ValueAnimator.ofFloat(0, 5);
+                    scaleAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                        @Override
+                        public void onAnimationUpdate(ValueAnimator animation) {
+                            selectedBarPadding = (float)animation.getAnimatedValue();
+                            invalidate();
+                        }
+                    });
+                    scaleAnimator.setDuration(animationDuration);
+                    scaleAnimator.start();
+                    mSelectedBar = index;
+                }
+            } else {
+                mSelectedBar = index;
+                invalidate();
+            }
+        } else {
+            mSelectedBar = -1;
+            invalidate();
+        }
+    }
+
+    public int getSelectedBar(){
+        return mSelectedBar;
     }
 
     /**
@@ -228,7 +360,6 @@ public class GraphView extends View {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
                     maxBarValue = (float) animation.getAnimatedValue("MaxBarValue");
-                    Log.d(TAG, "invalidation " + maxBarValue);
                     invalidate();
                 }
             });
@@ -247,7 +378,10 @@ public class GraphView extends View {
      */
     public void setBarValues(final ArrayList<Float> localBarValues, final boolean animate) {
         float maxValue = 0;
-        for (float value : localBarValues) if (value>maxValue) maxValue = value;
+        for (float value : localBarValues) {
+            if (value>maxValue) maxValue = value;
+            mBarRects.add(new Rect());
+        }
         maxBarValue = maxValue;
         if (animate){
             ValueAnimator animator = new ValueAnimator();
@@ -264,7 +398,6 @@ public class GraphView extends View {
                 PropertyValuesHolder valuesHolder =
                         PropertyValuesHolder.ofFloat(String.valueOf(i), 0, localBarValues.get(i));
                 valuesHolders[i] = valuesHolder;
-                Log.d(TAG, "Value "+i+" = "+localBarValues.get(i));
             }
             animator.setValues(valuesHolders);
             animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -282,7 +415,6 @@ public class GraphView extends View {
             this.barValues = localBarValues;
             invalidate();
         }
-        //invalidate();
     }
 
     public Drawable getGraphBackground() {
@@ -295,6 +427,14 @@ public class GraphView extends View {
 
     public Drawable getBar() {
         return mBar;
+    }
+
+    public float getTextSize() {
+        return textSize;
+    }
+
+    public int getTextColor(){
+        return textColor;
     }
 
     private void setGraphBackground(Drawable resource){
@@ -313,8 +453,6 @@ public class GraphView extends View {
     }
 
     public void setGraphBackgroundResource(@DrawableRes int id){
-//        if (id != 0 && id == mGraphBackgroundResource)
-//            return;
         Drawable drawable = null;
         if (id != 0){
             drawable = ContextCompat.getDrawable(mContext, id);
@@ -368,11 +506,11 @@ public class GraphView extends View {
         setBarBackground(drawable);
     }
 
-    public float getTextSize() {
-        return textSize;
-    }
-
     public void setTextSize(float textSize) {
         this.textSize = textSize;
+    }
+
+    public void setTextColor(@ColorInt int color){
+        this.textColor = color;
     }
 }
