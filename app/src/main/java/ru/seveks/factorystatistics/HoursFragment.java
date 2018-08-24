@@ -78,7 +78,8 @@ public class HoursFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_hours, container, false);
         GraphView graphView = view.findViewById(R.id.graph);
-        graphView.setBarValues(dataset, false);
+        if (dataset != null)
+            graphView.setBarValues(dataset, false);
 
 
         /*ShapeOfView shapeOfView = view.findViewById(R.id.myShape);

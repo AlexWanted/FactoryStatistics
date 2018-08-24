@@ -24,6 +24,7 @@ public class OverviewPresenter implements Parcelable {
         weight_2 = in.readFloat();
         weight_3 = in.readFloat();
         values = (ArrayList<Float>) in.readSerializable();
+        model = (OverviewModel) in.readSerializable();
     }
 
     public static final Creator<OverviewPresenter> CREATOR = new Creator<OverviewPresenter>() {
@@ -90,5 +91,6 @@ public class OverviewPresenter implements Parcelable {
         dest.writeFloat(weight_2);
         dest.writeFloat(weight_3);
         dest.writeSerializable(values);
+        dest.writeSerializable(model);
     }
 }
