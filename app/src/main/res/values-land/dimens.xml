@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="header_start_guideline_percent">0</dimen>
+    <dimen name="header_end_guideline_percent">0.4</dimen>
+    <dimen name="card_start_guideline_percent">0.36</dimen>
+    <dimen name="card_end_guideline_percent">1</dimen>
+    <dimen name="card_padding_top">2dp</dimen>
+
+    <dimen name="text_start_guideline_percent">0.02</dimen>
+    <dimen name="text_end_guideline_percent">0.37</dimen>
+    <dimen name="text_center_vertical_guideline_percent">0.185</dimen>
+    <dimen name="text_top_guideline_percent">0.20</dimen>
+    <dimen name="text_center_horizontal_guideline_percent">0.5</dimen>
+    <dimen name="text_bottom_guideline_percent">0.75</dimen>
+
+    <dimen name="settings_start_guideline_percent">0.01</dimen>
+    <dimen name="settings_end_guideline_percent">0.06</dimen>
+    <dimen name="settings_top_guideline_percent">0.01</dimen>
+    <dimen name="settings_bottom_guideline_percent">0.1</dimen>
+</resources>

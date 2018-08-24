@@ -20,10 +20,14 @@ import java.util.Random;
 import ru.seveks.factorystatistics.Overview.OverviewModel;
 import ru.seveks.factorystatistics.Overview.OverviewPresenter;
 
+import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
+
 public class OverviewFragment extends Fragment {
     int weight_1 = 80, weight_2 = 10, weight_3 = 15;
 
     private OverviewPresenter presenter;
+    GraphView graphView;
+    ArrayList<Float> values;
 
     public OverviewFragment() { }
 
@@ -36,9 +40,13 @@ public class OverviewFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getActivity() != null)
-            ((MainActivity)getActivity()).setStatusBarTranslucent(true, Color.WHITE);
-
+        if (getActivity() != null) {
+            if(getActivity().getResources().getConfiguration().orientation == ORIENTATION_PORTRAIT)
+                ((MainActivity) getActivity()).setStatusBarTranslucent(true, Color.WHITE);
+            else
+                ((MainActivity) getActivity()).setStatusBarTranslucent(false, Color.WHITE);
+        }
+        values = new ArrayList<>();
         OverviewModel model = new OverviewModel();
         presenter = new OverviewPresenter(model);
         presenter.attachFragment(this);
@@ -47,29 +55,12 @@ public class OverviewFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_overview, container, false);
-
         animateValues(weight_1, (TextView)view.findViewById(R.id.number_by_day));
         animateValues(weight_2, (TextView)view.findViewById(R.id.number_by_working_day));
         animateValues(weight_3, (TextView)view.findViewById(R.id.number_by_previous_working_day));
 
-        String full_day = getContext().getResources().getQuantityString(R.plurals.weight, weight_1)+" "
-                        + getContext().getResources().getString(R.string.full_day);
-        ((TextView) view.findViewById(R.id.by_day)).setText(full_day);
-
-        String this_day = getContext().getResources().getQuantityString(R.plurals.weight, weight_2)+" "
-                        + getContext().getResources().getString(R.string.this_day);
-        ((TextView) view.findViewById(R.id.by_working_day)).setText(this_day);
-
-        String previous_day = getContext().getResources().getQuantityString(R.plurals.weight, weight_3)+" "
-                            + getContext().getResources().getString(R.string.previous_day);
-        ((TextView) view.findViewById(R.id.by_previous_working_day)).setText(previous_day);
-
-        final GraphView graphView = view.findViewById(R.id.graph);
-        final ArrayList<Float> values = new ArrayList<>();
-        for (int i=0; i<24; i++){
-            values.add(new Random().nextFloat() % 136);
-        }
-        graphView.setBarValues(values, true);
+        graphView = view.findViewById(R.id.graph);
+        presenter.getFilesInDirectory();
 
         graphView.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -79,6 +70,7 @@ public class OverviewFragment extends Fragment {
                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                 Fragment hoursFragment = HoursFragment.newInstance(values);
                 ft.addToBackStack("charts");
+                ft.hide(getActivity().getSupportFragmentManager().findFragmentByTag("overview"));
                 ft.add(R.id.fragments_container, hoursFragment, "charts");
                 ft.commit();
             }
@@ -104,20 +96,27 @@ public class OverviewFragment extends Fragment {
                 }
             }
         });
-
-        presenter.getFilesInDirectory();
         return view;
+    }
+
+    public void updateChart(ArrayList<Float> values) {
+        if (graphView != null) {
+            this.values.clear();
+            this.values.addAll(values);
+            graphView.setBarValues(this.values, true);
+        }
     }
 
     private void animateValues(final int value, final TextView number_text) {
         ValueAnimator animator = ValueAnimator.ofInt(0, value);
-        animator.setDuration(1250);
+        animator.setDuration(950);
         animator.setStartDelay(100);
         animator.setInterpolator(new DecelerateInterpolator());
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             public void onAnimationUpdate(ValueAnimator animation) {
                 if(getContext() != null)
-                    number_text.setText(animation.getAnimatedValue().toString());
+                    number_text.setText(getContext().getResources().getString(R.string.tonne,
+                            Integer.parseInt(animation.getAnimatedValue().toString())));
             }
         });
         animator.start();

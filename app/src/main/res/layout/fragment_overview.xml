@@ -5,120 +5,106 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/container"
-    android:background="#fafafa"
     android:clickable="true">
 
     <android.support.constraint.Guideline
-        android:id="@+id/top_guideline"
+        android:id="@+id/header_top_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.0" />
-
+        app:layout_constraintGuide_percent="@dimen/header_top_guideline_percent" />
     <android.support.constraint.Guideline
-        android:id="@+id/bottom_guideline"
+        android:id="@+id/header_bottom_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.36"/>
+        app:layout_constraintGuide_percent="@dimen/header_bottom_guideline_percent"/>
 
     <android.support.constraint.Guideline
         android:id="@+id/card_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.34"/>
+        app:layout_constraintGuide_percent="@dimen/card_top_guideline_percent"/>
 
     <android.support.constraint.Guideline
         android:id="@+id/text_start_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.05" />
-
+        app:layout_constraintGuide_percent="@dimen/text_start_guideline_percent" />
     <android.support.constraint.Guideline
         android:id="@+id/text_end_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.95" />
-
+        app:layout_constraintGuide_percent="@dimen/text_end_guideline_percent" />
     <android.support.constraint.Guideline
-        android:id="@+id/text_center_guideline"
+        android:id="@+id/text_center_vertical_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
-
+        app:layout_constraintGuide_percent="@dimen/text_center_vertical_guideline_percent" />
     <android.support.constraint.Guideline
         android:id="@+id/text_top_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.05" />
-
+        app:layout_constraintGuide_percent="@dimen/text_top_guideline_percent" />
+    <android.support.constraint.Guideline
+        android:id="@+id/text_center_horizontal_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="@dimen/text_center_horizontal_guideline_percent" />
     <android.support.constraint.Guideline
         android:id="@+id/text_bottom_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.17" />
-
+        app:layout_constraintGuide_percent="@dimen/text_bottom_guideline_percent" />
     <android.support.constraint.Guideline
-        android:id="@+id/second_text_top_guideline"
+        android:id="@+id/settings_start_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="@dimen/settings_start_guideline_percent"/>
+    <android.support.constraint.Guideline
+        android:id="@+id/settings_end_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="@dimen/settings_end_guideline_percent"/>
+    <android.support.constraint.Guideline
+        android:id="@+id/settings_top_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.20" />
-
+        app:layout_constraintGuide_percent="@dimen/settings_top_guideline_percent"/>
     <android.support.constraint.Guideline
-        android:id="@+id/second_text_bottom_guideline"
+        android:id="@+id/settings_bottom_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.30" />
+        app:layout_constraintGuide_percent="@dimen/settings_bottom_guideline_percent"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@drawable/header_gradient"
-        app:layout_constraintBottom_toBottomOf="@+id/bottom_guideline"
-        app:layout_constraintTop_toTopOf="@+id/top_guideline" />
+        app:layout_constraintBottom_toBottomOf="@+id/header_bottom_guideline"
+        app:layout_constraintTop_toTopOf="@+id/header_top_guideline" />
 
-    <android.support.constraint.Guideline
-        android:id="@+id/settings_start_guide"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.89"/>
-    <android.support.constraint.Guideline
-        android:id="@+id/settings_end_guide"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.98"/>
-    <android.support.constraint.Guideline
-        android:id="@+id/settings_top_guide"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.05"/>
-    <android.support.constraint.Guideline
-        android:id="@+id/settings_bottom_guide"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.1"/>
     <ImageView
         android:id="@+id/settings"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:src="@drawable/ic_settings"
         android:background="?selectableItemBackground"
-        app:layout_constraintStart_toStartOf="@+id/settings_start_guide"
-        app:layout_constraintEnd_toEndOf="@+id/settings_end_guide"
-        app:layout_constraintTop_toTopOf="@+id/settings_top_guide"
-        app:layout_constraintBottom_toBottomOf="@+id/settings_bottom_guide"/>
+        app:layout_constraintStart_toStartOf="@+id/settings_start_guideline"
+        app:layout_constraintEnd_toEndOf="@+id/settings_end_guideline"
+        app:layout_constraintTop_toTopOf="@+id/settings_top_guideline"
+        app:layout_constraintBottom_toBottomOf="@+id/settings_bottom_guideline"/>
 
     <LinearLayout
         android:layout_width="0dp"
@@ -127,8 +113,22 @@
         app:layout_constraintStart_toStartOf="@+id/text_start_guideline"
         app:layout_constraintEnd_toEndOf="@+id/text_end_guideline"
         app:layout_constraintTop_toTopOf="@+id/text_top_guideline"
-        app:layout_constraintBottom_toBottomOf="@+id/text_bottom_guideline"
+        app:layout_constraintBottom_toBottomOf="@+id/text_center_horizontal_guideline"
         android:weightSum="6">
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/by_day"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="4"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="@string/full_day"
+            android:textColor="#dcffffff"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-condensed"
+            app:autoSizeTextType="uniform"
+            app:autoSizeMinTextSize="10sp"
+            app:autoSizeStepGranularity="2sp" />
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/number_by_day"
             android:layout_width="match_parent"
@@ -136,22 +136,10 @@
             android:layout_weight="2"
             android:gravity="center"
             android:text="0"
-            android:maxLines="1"
+            android:maxLines="2"
             android:textColor="@android:color/white"
             app:autoSizeTextType="uniform"
             app:autoSizeStepGranularity="4sp" />
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/by_day"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="4"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:maxLines="1"
-            android:textColor="#dcffffff"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="10sp"
-            app:autoSizeStepGranularity="2sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -159,10 +147,26 @@
         android:layout_height="0dp"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="@+id/text_start_guideline"
-        app:layout_constraintEnd_toEndOf="@+id/text_center_guideline"
-        app:layout_constraintTop_toTopOf="@+id/second_text_top_guideline"
-        app:layout_constraintBottom_toBottomOf="@+id/second_text_bottom_guideline"
-        android:weightSum="5">
+        app:layout_constraintEnd_toEndOf="@+id/text_center_vertical_guideline"
+        app:layout_constraintTop_toTopOf="@+id/text_center_horizontal_guideline"
+        app:layout_constraintBottom_toBottomOf="@+id/text_bottom_guideline"
+        android:weightSum="6">
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/by_working_day"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:layout_weight="4"
+            android:gravity="end"
+            android:maxLines="1"
+            android:text="@string/this_day"
+            android:textStyle="bold"
+            android:textColor="#dcffffff"
+            android:fontFamily="sans-serif-condensed"
+            app:autoSizeTextType="uniform"
+            app:autoSizeMinTextSize="8sp"
+            app:autoSizeStepGranularity="2sp" />
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/number_by_working_day"
             android:layout_width="match_parent"
@@ -172,23 +176,9 @@
             android:layout_weight="2"
             android:gravity="end"
             android:text="0"
-            android:maxLines="1"
+            android:maxLines="2"
             android:textColor="@android:color/white"
             app:autoSizeTextType="uniform"
-            app:autoSizeStepGranularity="2sp" />
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/by_working_day"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:layout_weight="3"
-            android:gravity="end"
-            android:textStyle="bold"
-            android:maxLines="1"
-            android:textColor="#dcffffff"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="8sp"
             app:autoSizeStepGranularity="2sp" />
     </LinearLayout>
 
@@ -196,21 +186,37 @@
         android:layout_width="0.5dp"
         android:layout_height="0dp"
         android:background="#cacaca"
-        app:layout_constraintStart_toStartOf="@+id/text_center_guideline"
-        app:layout_constraintEnd_toEndOf="@+id/text_center_guideline"
-        app:layout_constraintTop_toTopOf="@+id/second_text_top_guideline"
-        app:layout_constraintBottom_toBottomOf="@+id/second_text_bottom_guideline"/>
+        app:layout_constraintStart_toStartOf="@+id/text_center_vertical_guideline"
+        app:layout_constraintEnd_toEndOf="@+id/text_center_vertical_guideline"
+        app:layout_constraintTop_toTopOf="@+id/text_center_horizontal_guideline"
+        app:layout_constraintBottom_toBottomOf="@+id/text_bottom_guideline"/>
 
     <LinearLayout
         android:id="@+id/cards"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintStart_toStartOf="@+id/text_center_guideline"
+        app:layout_constraintStart_toStartOf="@+id/text_center_vertical_guideline"
         app:layout_constraintEnd_toEndOf="@+id/text_end_guideline"
-        app:layout_constraintTop_toTopOf="@+id/second_text_top_guideline"
-        app:layout_constraintBottom_toBottomOf="@+id/second_text_bottom_guideline"
-        android:weightSum="5">
+        app:layout_constraintTop_toTopOf="@+id/text_center_horizontal_guideline"
+        app:layout_constraintBottom_toBottomOf="@+id/text_bottom_guideline"
+        android:weightSum="6">
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/by_previous_working_day"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:layout_weight="4"
+            android:gravity="start"
+            android:maxLines="1"
+            android:text="@string/previous_day"
+            android:textColor="#dcffffff"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-condensed"
+            app:autoSizeTextType="uniform"
+            app:autoSizeMinTextSize="8sp"
+            app:autoSizeStepGranularity="2sp" />
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/number_by_previous_working_day"
             android:layout_width="match_parent"
@@ -220,23 +226,9 @@
             android:layout_weight="2"
             android:gravity="start"
             android:text="0"
-            android:maxLines="1"
+            android:maxLines="2"
             android:textColor="@android:color/white"
             app:autoSizeTextType="uniform"
-            app:autoSizeStepGranularity="2sp" />
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/by_previous_working_day"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:layout_weight="3"
-            android:gravity="start"
-            android:textStyle="bold"
-            android:maxLines="1"
-            android:textColor="#dcffffff"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="8sp"
             app:autoSizeStepGranularity="2sp" />
     </LinearLayout>
 
@@ -246,7 +238,7 @@
         android:paddingStart="4dp"
         android:paddingEnd="4dp"
         android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="@+id/second_text_bottom_guideline">
+        app:layout_constraintTop_toTopOf="@+id/text_bottom_guideline">
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="200dp"

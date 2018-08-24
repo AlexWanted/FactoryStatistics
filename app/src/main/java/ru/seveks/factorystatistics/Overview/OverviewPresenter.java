@@ -1,9 +1,18 @@
 package ru.seveks.factorystatistics.Overview;
 
 import android.util.Log;
+import android.util.SparseArray;
 import android.widget.Toast;
 
+import com.linuxense.javadbf.DBFField;
+import com.linuxense.javadbf.DBFReader;
+
 import org.apache.commons.net.ftp.FTPFile;
+
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import ru.seveks.factorystatistics.OverviewFragment;
 
@@ -27,9 +36,8 @@ public class OverviewPresenter {
     public void getFilesInDirectory(){
         model.getFTPFiles(new OverviewModel.LoadFilesCallback() {
             @Override
-            public void onLoad(FTPFile[] files) {
-                if(files != null)
-                    for (FTPFile file : files) Log.d("FILES", String.valueOf(file.getName()));
+            public void onLoad(ArrayList<Float> fields) {
+                fragment.updateChart(fields);
             }
         });
     }

@@ -6,15 +6,16 @@
     <string name="factory_name">Название завода</string>
     <string name="ftp_directory">Директория в FTP</string>
 
-    <string name="full_day">за сутки</string>
-    <string name="this_day">за текущую смену</string>
-    <string name="previous_day">за прошлую смену</string>
-
+    <string name="full_day">За сутки</string>
+    <string name="this_day">За смену</string>
+    <string name="previous_day">За прошлую</string>
+    <string name="tonne">%1$d т</string>
+    
     <plurals name="weight">
-        <item quantity="zero">Тонн</item>
-        <item quantity="one">Тонна</item>
-        <item quantity="few">Тонны</item>
-        <item quantity="many">Тонн</item>
-        <item quantity="other">Тонн</item>
+        <item quantity="zero">%1$d тонн</item>
+        <item quantity="one">%1$d тонна</item>
+        <item quantity="few">%1$d тонны</item>
+        <item quantity="many">%1$d тонн</item>
+        <item quantity="other">%1$d тонн</item>
     </plurals>
 </resources>

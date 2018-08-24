@@ -13,58 +13,64 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.0" />
+        app:layout_constraintGuide_percent="@dimen/header_start_guideline_percent" />
     <android.support.constraint.Guideline
         android:id="@+id/header_end_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.4"/>
+        app:layout_constraintGuide_percent="@dimen/header_end_guideline_percent"/>
 
     <android.support.constraint.Guideline
         android:id="@+id/text_start_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.05" />
+        app:layout_constraintGuide_percent="@dimen/text_start_guideline_percent" />
     <android.support.constraint.Guideline
         android:id="@+id/text_end_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.35" />
+        app:layout_constraintGuide_percent="@dimen/text_end_guideline_percent" />
     <android.support.constraint.Guideline
-        android:id="@+id/text_center_guideline"
+        android:id="@+id/text_center_vertical_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.2" />
+        app:layout_constraintGuide_percent="@dimen/text_center_vertical_guideline_percent" />
     <android.support.constraint.Guideline
         android:id="@+id/text_top_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.2" />
+        app:layout_constraintGuide_percent="@dimen/text_top_guideline_percent" />
+    <android.support.constraint.Guideline
+        android:id="@+id/text_center_horizontal_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="@dimen/text_center_horizontal_guideline_percent" />
     <android.support.constraint.Guideline
         android:id="@+id/text_bottom_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.45" />
+        app:layout_constraintGuide_percent="@dimen/text_bottom_guideline_percent" />
 
     <android.support.constraint.Guideline
-        android:id="@+id/second_text_top_guideline"
+        android:id="@+id/card_start_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5" />
-
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="@dimen/card_start_guideline_percent"/>
     <android.support.constraint.Guideline
-        android:id="@+id/second_text_bottom_guideline"
+        android:id="@+id/card_end_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.80" />
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="@dimen/card_end_guideline_percent"/>
+
     <View
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -73,30 +79,29 @@
         app:layout_constraintEnd_toEndOf="@+id/header_end_guideline" />
 
     <android.support.constraint.Guideline
-        android:id="@+id/settings_start_guide"
+        android:id="@+id/settings_start_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.01"/>
-
+        app:layout_constraintGuide_percent="@dimen/settings_start_guideline_percent"/>
     <android.support.constraint.Guideline
-        android:id="@+id/settings_end_guide"
+        android:id="@+id/settings_end_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.07" />
+        app:layout_constraintGuide_percent="@dimen/settings_end_guideline_percent" />
     <android.support.constraint.Guideline
-        android:id="@+id/settings_top_guide"
+        android:id="@+id/settings_top_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.06"/>
+        app:layout_constraintGuide_percent="@dimen/settings_top_guideline_percent"/>
     <android.support.constraint.Guideline
-        android:id="@+id/settings_bottom_guide"
+        android:id="@+id/settings_bottom_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.15"/>
+        app:layout_constraintGuide_percent="@dimen/settings_bottom_guideline_percent"/>
 
     <ImageView
         android:id="@+id/settings"
@@ -104,10 +109,10 @@
         android:layout_height="0dp"
         android:src="@drawable/ic_settings"
         android:background="?selectableItemBackground"
-        app:layout_constraintStart_toStartOf="@+id/settings_start_guide"
-        app:layout_constraintEnd_toEndOf="@+id/settings_end_guide"
-        app:layout_constraintTop_toTopOf="@+id/settings_top_guide"
-        app:layout_constraintBottom_toBottomOf="@+id/settings_bottom_guide"/>
+        app:layout_constraintStart_toStartOf="@+id/settings_start_guideline"
+        app:layout_constraintEnd_toEndOf="@+id/settings_end_guideline"
+        app:layout_constraintTop_toTopOf="@+id/settings_top_guideline"
+        app:layout_constraintBottom_toBottomOf="@+id/settings_bottom_guideline"/>
 
     <LinearLayout
         android:layout_width="0dp"
@@ -116,32 +121,33 @@
         app:layout_constraintStart_toStartOf="@+id/text_start_guideline"
         app:layout_constraintEnd_toEndOf="@+id/text_end_guideline"
         app:layout_constraintTop_toTopOf="@+id/text_top_guideline"
-        app:layout_constraintBottom_toBottomOf="@+id/text_bottom_guideline"
-        android:weightSum="5">
+        app:layout_constraintBottom_toBottomOf="@+id/text_center_horizontal_guideline"
+        android:weightSum="6">
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/by_day"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="4"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="@string/full_day"
+            android:textColor="#dcffffff"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-condensed"
+            app:autoSizeTextType="uniform"
+            app:autoSizeMinTextSize="10sp"
+            app:autoSizeStepGranularity="2sp" />
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/number_by_day"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:gravity="center"
-            android:text="10"
-            android:maxLines="1"
+            android:text="0"
+            android:maxLines="2"
             android:textColor="@android:color/white"
             app:autoSizeTextType="uniform"
             app:autoSizeStepGranularity="4sp" />
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/by_day"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:maxLines="1"
-            android:text="@string/full_day"
-            android:textColor="#dcffffff"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="8sp"
-            app:autoSizeStepGranularity="2sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -149,10 +155,27 @@
         android:layout_height="0dp"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="@+id/text_start_guideline"
-        app:layout_constraintEnd_toEndOf="@+id/text_center_guideline"
-        app:layout_constraintTop_toTopOf="@+id/second_text_top_guideline"
-        app:layout_constraintBottom_toBottomOf="@+id/second_text_bottom_guideline"
-        android:weightSum="4">
+        app:layout_constraintEnd_toEndOf="@+id/text_center_vertical_guideline"
+        app:layout_constraintTop_toTopOf="@+id/text_center_horizontal_guideline"
+        app:layout_constraintBottom_toBottomOf="@+id/text_bottom_guideline"
+        android:weightSum="6">
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/by_working_day"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:layout_weight="4"
+            android:gravity="end"
+            android:maxLines="1"
+            android:text="@string/this_day"
+            android:textStyle="bold"
+            android:textColor="#dcffffff"
+            android:textAlignment="center"
+            android:fontFamily="sans-serif-condensed"
+            app:autoSizeTextType="uniform"
+            app:autoSizeMinTextSize="8sp"
+            app:autoSizeStepGranularity="2sp" />
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/number_by_working_day"
             android:layout_width="match_parent"
@@ -160,26 +183,11 @@
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
             android:layout_weight="2"
-            android:gravity="end"
+            android:gravity="center"
             android:text="0"
-            android:maxLines="1"
+            android:maxLines="2"
             android:textColor="@android:color/white"
             app:autoSizeTextType="uniform"
-            app:autoSizeStepGranularity="2sp" />
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/by_working_day"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:layout_weight="2"
-            android:text="@string/this_day"
-            android:gravity="end"
-            android:textStyle="bold"
-            android:maxLines="3"
-            android:textColor="#dcffffff"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="8sp"
             app:autoSizeStepGranularity="2sp" />
     </LinearLayout>
 
@@ -187,20 +195,38 @@
         android:layout_width="0.5dp"
         android:layout_height="0dp"
         android:background="#cacaca"
-        app:layout_constraintStart_toStartOf="@+id/text_center_guideline"
-        app:layout_constraintEnd_toEndOf="@+id/text_center_guideline"
-        app:layout_constraintTop_toTopOf="@+id/second_text_top_guideline"
-        app:layout_constraintBottom_toBottomOf="@+id/second_text_bottom_guideline"/>
+        app:layout_constraintStart_toStartOf="@+id/text_center_vertical_guideline"
+        app:layout_constraintEnd_toEndOf="@+id/text_center_vertical_guideline"
+        app:layout_constraintTop_toTopOf="@+id/text_center_horizontal_guideline"
+        app:layout_constraintBottom_toBottomOf="@+id/text_bottom_guideline"/>
+
     <LinearLayout
         android:id="@+id/cards"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintStart_toStartOf="@+id/text_center_guideline"
+        app:layout_constraintStart_toStartOf="@+id/text_center_vertical_guideline"
         app:layout_constraintEnd_toEndOf="@+id/text_end_guideline"
-        app:layout_constraintTop_toTopOf="@+id/second_text_top_guideline"
-        app:layout_constraintBottom_toBottomOf="@+id/second_text_bottom_guideline"
-        android:weightSum="4">
+        app:layout_constraintTop_toTopOf="@+id/text_center_horizontal_guideline"
+        app:layout_constraintBottom_toBottomOf="@+id/text_bottom_guideline"
+        android:weightSum="6">
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/by_previous_working_day"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:layout_weight="4"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="@string/previous_day"
+            android:textColor="#dcffffff"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-condensed"
+            android:textAlignment="center"
+            app:autoSizeTextType="uniform"
+            app:autoSizeMinTextSize="8sp"
+            app:autoSizeStepGranularity="2sp" />
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/number_by_previous_working_day"
             android:layout_width="match_parent"
@@ -208,58 +234,26 @@
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
             android:layout_weight="2"
-            android:gravity="start"
+            android:gravity="center"
             android:text="0"
-            android:maxLines="1"
+            android:maxLines="2"
             android:textColor="@android:color/white"
             app:autoSizeTextType="uniform"
             app:autoSizeStepGranularity="2sp" />
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/by_previous_working_day"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:layout_weight="2"
-            android:gravity="start"
-            android:textStyle="bold"
-            android:text="@string/previous_day"
-            android:maxLines="3"
-            android:textColor="#dcffffff"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="8sp"
-            app:autoSizeStepGranularity="2sp" />
     </LinearLayout>
 
-    <android.support.constraint.Guideline
-        android:id="@+id/card_guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.35"/>
-    <android.support.constraint.Guideline
-        android:id="@+id/card_end_guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="1"/>
-    <android.support.constraint.Guideline
-        android:id="@+id/card_top_guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.05" />
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:paddingStart="4dp"
         android:paddingEnd="4dp"
-        app:layout_constraintStart_toStartOf="@+id/card_guideline"
+        app:layout_constraintStart_toStartOf="@+id/card_start_guideline"
         app:layout_constraintEnd_toEndOf="@+id/card_end_guideline">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingTop="@dimen/card_padding_top">
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
