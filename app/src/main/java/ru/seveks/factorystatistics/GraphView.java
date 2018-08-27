@@ -1,9 +1,5 @@
 package ru.seveks.factorystatistics;
 
-
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -11,6 +7,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -23,12 +20,10 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewPropertyAnimator;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AnimationSet;
 import android.view.animation.Interpolator;
 
-import java.sql.Struct;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class GraphView extends View {
@@ -55,6 +50,9 @@ public class GraphView extends View {
     private float barPaddingBottom = 0;
     private float maxBarValue = 0;
     private float textSize = 0;
+    private float thumbTextSize = 70;
+    private DecimalFormat decimalFormat;
+    private Path mThumbPath;
 
     //Variables for onDraw();
     private float barRatio = 0;
@@ -88,13 +86,17 @@ public class GraphView extends View {
         mGraphRect = new Rect();
         mBarRect = new Rect();
         mTextRect = new Rect();
+        mThumbPath = new Path();
+
+        decimalFormat = new DecimalFormat("0.# т");
 
         mTextPaint.setTypeface(Typeface.DEFAULT_BOLD);
         mTextPaint.setTextAlign(Paint.Align.CENTER);
         mTextPaint.setFlags( Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
 
         setLayerType(LAYER_TYPE_SOFTWARE, mShadowPaint);
-        mShadowPaint.setColor(Color.BLACK);
+        mShadowPaint.setColor(Color.WHITE);
+        mShadowPaint.setFlags(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
 
         ArrayList<Float> values = new ArrayList<>();
         values.add(0f);
@@ -128,7 +130,6 @@ public class GraphView extends View {
         barPaddingRight = 0;
         barPaddingTop = 0;
         barPaddingBottom = 0;
-
         setClickable(true);
 
         if (context != null && attrs != null){
@@ -151,6 +152,7 @@ public class GraphView extends View {
                 setGraphBackgroundColor(ContextCompat.getColor(context, R.color.colorTransparent));
             }
             textSize = a.getDimension(R.styleable.GraphView_textSize, 0);
+            thumbTextSize = a.getDimension(R.styleable.GraphView_thumbTextSize, 70);
             mTextPaint.setTextSize(textSize);
             textColor = a.getColor(R.styleable.GraphView_textColor, ContextCompat.getColor(context, R.color.colorPrimaryDark));
             mTextPaint.setColor(textColor);
@@ -265,9 +267,40 @@ public class GraphView extends View {
                 getBarBackground().setBounds(mBarRect);
                 getBarBackground().draw(canvas);
 
+                mTextPaint.setTextSize(thumbTextSize);
+                text = decimalFormat.format(barValues.get(mSelectedBar)).replace(",",".");
+                mTextPaint.getTextBounds(text, 0, text.length(), mTextRect);
+
+                int height = (int) (mTextRect.height()*1.5);
+                int width = (int) (mTextRect.width()*1.5);
+
+                int textCenterX = mBarRect.centerX();
+                if (mBarRect.centerX() < viewRect.left + width/2) textCenterX = width/2;
+                if (mBarRect.centerX() > viewRect.right - width/2) textCenterX = viewRect.right-width/2+getPaddingRight();
+
+                mTextRect.left = textCenterX-width/2;
+                mTextRect.right = textCenterX+width/2;
+                mTextRect.top = mBarRect.top;
+                mTextRect.bottom = mTextRect.top+height;
+
+
+                int r = mTextRect.height()/2;
+                mThumbPath.reset();
+                mThumbPath.moveTo(mTextRect.right-r, mTextRect.top);
+                mThumbPath.rQuadTo(r, 0, r, r);
+                mThumbPath.rQuadTo(0, r, -r, r);
+                mThumbPath.lineTo(mTextRect.left+r, mTextRect.bottom);
+                mThumbPath.rQuadTo(-r, 0, -r, -r);//bottom-left corner
+                mThumbPath.rQuadTo(0, -r, r, -r);
+                mThumbPath.lineTo(mTextRect.right-r, mTextRect.top);
+
                 mBarRect.bottom = barBottom;
                 mBarRect.top += (1 - barRatio) * mBarRect.height();
                 if (maxBarValue != 0) canvas.drawRect(mBarRect, mTextPaint);
+
+                canvas.drawPath(mThumbPath, mShadowPaint);
+                canvas.drawText(text, mTextRect.centerX(), (float) (mTextRect.centerY()+height/3), mTextPaint);
+
             }
 
         }
@@ -281,6 +314,7 @@ public class GraphView extends View {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                 case MotionEvent.ACTION_MOVE: {
+                    Log.d(TAG,"move");
                     for (int i = 0; i < mBarRects.size(); i++) {
                         if (mX >= mBarRects.get(i).left && mX<= mBarRects.get(i).right){
                             setSelectedBar(i, true);
@@ -294,6 +328,7 @@ public class GraphView extends View {
                         performClick();
                     }
                     setSelectedBar(-1, true);
+
                     break;
                 }
             }
@@ -320,7 +355,6 @@ public class GraphView extends View {
         if (mSelectedBar != index) {
             if (index > -1 && index < getBarCount()) {
                 if (animate) {
-                    AnimatorSet selectBarAnimatorSet = new AnimatorSet();
                     if (getSelectedBar() != -1) {
                         ValueAnimator scaleAnimator = ValueAnimator.ofFloat(5, 0);
                         scaleAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -330,17 +364,12 @@ public class GraphView extends View {
                                 invalidate();
                             }
                         });
-                        scaleAnimator.addListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                mSelectedBar = -1;
-                                setSelectedBar(index, true);
-                                Log.d(TAG,"setSelectedBar: deselected bar");
-                            }
-                        });
                         scaleAnimator.setDuration(animationDuration);
                         scaleAnimator.start();
+                        mSelectedBar = -1;
+                        setSelectedBar(index, true);
                     } else {
+
                         mSelectedBar = index;
                         ValueAnimator scaleAnimator = ValueAnimator.ofFloat(0, 5);
                         scaleAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
