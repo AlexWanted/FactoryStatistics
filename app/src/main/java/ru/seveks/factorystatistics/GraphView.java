@@ -12,6 +12,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
@@ -27,6 +28,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AnimationSet;
 import android.view.animation.Interpolator;
 
+import java.sql.Struct;
 import java.util.ArrayList;
 
 public class GraphView extends View {
@@ -34,7 +36,7 @@ public class GraphView extends View {
     private static final String TAG = GraphView.class.getSimpleName();
     private Context mContext;
     private Paint mTextPaint, mShadowPaint;
-    private Rect mGraphRect, mBarRect, viewRect;
+    private Rect mGraphRect, mBarRect, viewRect, mTextRect;
     private ArrayList<Float> barValues = new ArrayList<>();
     private ArrayList<Rect> mBarRects = new ArrayList<>();
     private Drawable mBar;
@@ -53,6 +55,10 @@ public class GraphView extends View {
     private float barPaddingBottom = 0;
     private float maxBarValue = 0;
     private float textSize = 0;
+
+    //Variables for onDraw();
+    private float barRatio = 0;
+    private String text = "";
 
     public GraphView(Context context) {
         super(context);
@@ -81,13 +87,13 @@ public class GraphView extends View {
         viewRect = new Rect();
         mGraphRect = new Rect();
         mBarRect = new Rect();
+        mTextRect = new Rect();
 
-
-
+        mTextPaint.setTypeface(Typeface.DEFAULT_BOLD);
         mTextPaint.setTextAlign(Paint.Align.CENTER);
-        mTextPaint.setFlags(Paint.LINEAR_TEXT_FLAG | Paint.SUBPIXEL_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG
-            | Paint.DITHER_FLAG | Paint.FAKE_BOLD_TEXT_FLAG);
+        mTextPaint.setFlags( Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
 
+        setLayerType(LAYER_TYPE_SOFTWARE, mShadowPaint);
         mShadowPaint.setColor(Color.BLACK);
 
         ArrayList<Float> values = new ArrayList<>();
@@ -115,7 +121,7 @@ public class GraphView extends View {
         values.add(0f);
         values.add(0f);
         values.add(0f);
-        setBarValues(values, false);
+        setBarValues(values, false, false);
 
         barPadding = 0;
         barPaddingLeft = 0;
@@ -145,7 +151,9 @@ public class GraphView extends View {
                 setGraphBackgroundColor(ContextCompat.getColor(context, R.color.colorTransparent));
             }
             textSize = a.getDimension(R.styleable.GraphView_textSize, 0);
+            mTextPaint.setTextSize(textSize);
             textColor = a.getColor(R.styleable.GraphView_textColor, ContextCompat.getColor(context, R.color.colorPrimaryDark));
+            mTextPaint.setColor(textColor);
             a.recycle();
         }
 
@@ -190,11 +198,15 @@ public class GraphView extends View {
                 }
                 //Если размер текста больше ширины столбца (с учётом padding), размер текста
                 //будет равен ширине столбца
+                text = String.valueOf(i);
+
                 if (textSize > mBarRect.width()) textSize = mBarRect.width();
+                mTextPaint.setTextSize(textSize);
+
                 //Поднимаем низ столбца к топу текста, вычисляем высоту столбца и рисуем лишь
                 // ту часть фона столбца, которая видна пользователю
                 mBarRect.bottom -= textSize;
-                float barRatio = barValues.get(i) / maxBarValue;
+                barRatio = barValues.get(i) / maxBarValue;
                 int barBottom = mBarRect.bottom;
                 mBarRect.bottom = mBarRect.top + (int)(mBarRect.height() * (1-barRatio));
                 if (i != mSelectedBar) {
@@ -203,8 +215,6 @@ public class GraphView extends View {
                 }
                 //Задаём размер текста краске, задаём центр отрисовки и рисуем текст
                 // с флагами заданными в init
-                mTextPaint.setTextSize(textSize);
-                mTextPaint.setColor(textColor);
                 canvas.drawText(String.valueOf(i), mBarRect.centerX(), barBottom+textSize, mTextPaint);
 
                 //Вычисляем размер столбца и рисуем его
@@ -240,9 +250,13 @@ public class GraphView extends View {
                 mBarRect.top -= selectedBarPadding*2;
                 mBarRect.bottom += selectedBarPadding*2;
 
-                mShadowPaint.setShadowLayer((float)(selectedBarPadding*selectedBarPadding), 0, 0, Color.BLACK);
-                canvas.drawRect(mBarRect, mShadowPaint);
+                float radius = (float) Math.pow(selectedBarPadding, 1.5);
+                radius *= 0.75;
 
+                mShadowPaint.setShadowLayer(radius,
+                        0, selectedBarPadding,
+                        Color.GRAY);
+                canvas.drawRect(mBarRect, mShadowPaint);
 
                 float barRatio = barValues.get(mSelectedBar) / maxBarValue;
                 int barBottom = mBarRect.bottom;
@@ -390,16 +404,17 @@ public class GraphView extends View {
     /**
      * Устанавливает значения пиков. Если не задать во вью будет лишь фон graphView
      * @param localBarValues значения пиков
-     * @param animate анимировать возрастания пиков от предыдущего значения
+     * @param animateBarChange анимировать возрастания столбцов от предыдущего значения к текущему
+     * @param animateMaxBar анимировать ли изменение максимального значения
      */
-    public void setBarValues(final ArrayList<Float> localBarValues, final boolean animate) {
+    public void setBarValues(final ArrayList<Float> localBarValues, final boolean animateBarChange, boolean animateMaxBar) {
         float maxValue = 0;
         for (float value : localBarValues) {
             if (value>maxValue) maxValue = value;
             mBarRects.add(new Rect());
         }
-        setMaxBarValue(maxValue, false);
-        if (animate){
+        setMaxBarValue(maxValue, animateMaxBar);
+        if (animateBarChange){
             ValueAnimator animator = new ValueAnimator();
             animator.setDuration(1250);
             animator.setInterpolator(new Interpolator() {
@@ -411,8 +426,12 @@ public class GraphView extends View {
             animator.setStartDelay(100);
             PropertyValuesHolder[] valuesHolders = new PropertyValuesHolder[localBarValues.size()];
             for (int i=0; i<localBarValues.size(); i++){
+                float currentValue = 0;
+                if (barValues.get(i) != null){
+                    currentValue = barValues.get(i);
+                }
                 PropertyValuesHolder valuesHolder =
-                        PropertyValuesHolder.ofFloat(String.valueOf(i), 0, localBarValues.get(i));
+                        PropertyValuesHolder.ofFloat(String.valueOf(i), currentValue, localBarValues.get(i));
                 valuesHolders[i] = valuesHolder;
             }
             animator.setValues(valuesHolders);
