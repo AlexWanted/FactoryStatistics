@@ -12,6 +12,7 @@ import com.linuxense.javadbf.DBFUtils;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class OverviewModel implements Serializable {
     }
 
     interface LoadFilesCallback{
-        void onLoad(ArrayList<Float> fields);
+        void onLoad(boolean isError, ArrayList<Float> fields);
     }
 
     private class FTPTask extends AsyncTask<Void, Void, Void> {
@@ -36,6 +37,8 @@ public class OverviewModel implements Serializable {
         LoadFilesCallback callback;
         InputStream inputStream;
         ArrayList<Float> map;
+        boolean isError = false;
+        FTPClient ftpClient;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -48,10 +51,9 @@ public class OverviewModel implements Serializable {
 
         @Override
         protected Void doInBackground(Void... params) {
-            FTPClient ftpClient;
             try {
                 ftpClient = new FTPClient();
-                ftpClient.connect("78.107.253.212");
+                ftpClient.connect("78.107.253.212", 21);
 
                 if(ftpClient.login("korma", "3790")) {
                     FTPFile[] ftpFiles = ftpClient.listFiles("/USB_DISK/korma/");
@@ -77,16 +79,19 @@ public class OverviewModel implements Serializable {
                                 }
                                 Log.d("DB", "Successfully parsed file");
                             } catch (Exception e) {
+                                isError = true;
                                 map.clear();
                                 for (int i = 0; i < 24; i++)
                                     map.add(0f);
                                 Log.e("DB", "Failed to parse file");
+                                e.printStackTrace();
                             } finally {
                                 DBFUtils.close(reader);
                             }
                         }
                     }
                 } else {
+                    isError = true;
                     map.clear();
                     for (int i = 0; i < 24; i++)
                         map.add(0f);
@@ -94,6 +99,7 @@ public class OverviewModel implements Serializable {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                isError = true;
                 map.clear();
                 for (int i = 0; i < 24; i++)
                     map.add(0f);
@@ -105,7 +111,12 @@ public class OverviewModel implements Serializable {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-             callback.onLoad(map);
+            try {
+                ftpClient.disconnect();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            callback.onLoad(isError, map);
         }
     }
 }

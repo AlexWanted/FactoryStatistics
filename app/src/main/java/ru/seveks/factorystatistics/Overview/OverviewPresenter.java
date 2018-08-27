@@ -2,6 +2,7 @@ package ru.seveks.factorystatistics.Overview;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.widget.Toast;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -16,8 +17,8 @@ public class OverviewPresenter implements Parcelable {
     private float weight_1 = 0, weight_2 = 0, weight_3 = 0;
     private ArrayList<Float> values;
 
-    public OverviewPresenter(OverviewModel model) {
-        this.model = model;
+    public OverviewPresenter() {
+        this.model = new OverviewModel();
         this.values = new ArrayList<>();
     }
 
@@ -68,17 +69,19 @@ public class OverviewPresenter implements Parcelable {
     public void getFilesInDirectory(){
         model.getFTPFiles(new OverviewModel.LoadFilesCallback() {
             @Override
-            public void onLoad(ArrayList<Float> fields) {
-                if (fragment != null) {
-                    weight_1 = weight_2 = weight_3 = 0;
-                    for (float i : fields) {
-                        weight_1 += i;
-                        if (i >= 7 && i < 19) weight_2 += i;
-                        else weight_3 += i;
+            public void onLoad(boolean isError, ArrayList<Float> fields) {
+                if (!isError) {
+                    if (fragment != null) {
+                        weight_1 = weight_2 = weight_3 = 0;
+                        for (float i : fields) {
+                            weight_1 += i;
+                            if (i >= 7 && i < 19) weight_2 += i;
+                            else weight_3 += i;
+                        }
+                        values = fields;
+                        fragment.updateChart(fields, weight_1, weight_2, weight_3);
                     }
-                    values = fields;
-                    fragment.updateChart(fields, weight_1, weight_2, weight_3);
-                }
+                } else fragment.onConnectionError();
             }
         });
     }

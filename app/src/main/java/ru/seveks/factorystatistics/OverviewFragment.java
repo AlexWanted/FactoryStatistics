@@ -1,5 +1,7 @@
 package ru.seveks.factorystatistics;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
@@ -10,19 +12,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.transition.TransitionInflater;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Random;
 
-import ru.seveks.factorystatistics.Overview.OverviewModel;
 import ru.seveks.factorystatistics.Overview.OverviewPresenter;
 
 import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
@@ -38,8 +37,7 @@ public class OverviewFragment extends Fragment {
     public OverviewFragment() { }
 
     public static OverviewFragment newInstance() {
-        OverviewFragment fragment = new OverviewFragment();
-        return fragment;
+        return new OverviewFragment();
     }
 
     @Override
@@ -80,30 +78,27 @@ public class OverviewFragment extends Fragment {
                     graphView.setBarValues(presenter.getValues(), false, false);
             }
         } else {
-            OverviewModel model = new OverviewModel();
-            presenter = new OverviewPresenter(model);
+            presenter = new OverviewPresenter();
             presenter.attachFragment(this);
             presenter.getFilesInDirectory();
             refreshLayout.setRefreshing(true);
         }
 
         graphView.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
-            if(getActivity().getSupportFragmentManager().findFragmentByTag("charts") == null) {
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                Fragment hoursFragment = HoursFragment.newInstance(presenter.getValues());
-                ft.addToBackStack("charts");
-                ft.hide(getActivity().getSupportFragmentManager().findFragmentByTag("overview"));
-                ft.add(R.id.fragments_container, hoursFragment, "charts");
-                ft.commit();
-            }
+                if(getActivity().getSupportFragmentManager().findFragmentByTag("charts") == null) {
+                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                    Fragment hoursFragment = HoursFragment.newInstance(presenter.getValues());
+                    ft.addToBackStack("charts");
+                    ft.hide(getActivity().getSupportFragmentManager().findFragmentByTag("overview"));
+                    ft.add(R.id.fragments_container, hoursFragment, "charts");
+                    ft.commit();
+                }
             }
         });
 
         view.findViewById(R.id.settings).setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
                 if(getActivity().getSupportFragmentManager().findFragmentByTag("settings") == null) {
@@ -131,6 +126,11 @@ public class OverviewFragment extends Fragment {
         return view;
     }
 
+    public void onConnectionError() {
+        Toast.makeText(getContext(), "Ошибка подключения", Toast.LENGTH_SHORT).show();
+        refreshLayout.setRefreshing(false);
+
+    }
     public void updateChart(ArrayList<Float> values, float weight_1, float weight_2, float weight_3) {
         if (graphView != null) {
             if (prevMaxBarValue <= 1) graphView.setBarValues(values, true, false);
@@ -145,7 +145,8 @@ public class OverviewFragment extends Fragment {
     }
 
     private void animateValues(final float value, final TextView number_text) {
-        ValueAnimator animator = ValueAnimator.ofFloat(0, value);
+        ValueAnimator animator = ValueAnimator.ofFloat(
+                Float.valueOf(number_text.getText().toString().replace("т", "").replace(" ", "").replace(",", ".")), value);
         animator.setDuration(1000);
         animator.setInterpolator(new Interpolator() {
             @Override
@@ -158,6 +159,14 @@ public class OverviewFragment extends Fragment {
                 if(getContext() != null)
                     number_text.setText(getContext().getResources().getString(R.string.tonne,
                             Float.parseFloat(animation.getAnimatedValue().toString())));
+            }
+        });
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                number_text.setText(new DecimalFormat("0.# т").format(Float.valueOf(number_text.
+                        getText().toString().replace("т", "").replace(" ", "").replace(",", "."))));
             }
         });
         animator.start();

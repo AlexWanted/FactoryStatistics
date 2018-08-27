@@ -10,7 +10,9 @@
     <string name="this_day">За смену</string>
     <string name="previous_day">За прошлую</string>
     <string name="tonne">%1$.1f т</string>
-    
+    <string name="cancel">Отмена</string>
+    <string name="save">Сохранить</string>
+
     <plurals name="weight">
         <item quantity="zero">%1$d тонн</item>
         <item quantity="one">%1$d тонна</item>
