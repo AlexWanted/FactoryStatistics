@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import ru.seveks.factorystatistics.OverviewFragment;
+import ru.seveks.factorystatistics.R;
 
 public class OverviewPresenter implements Parcelable {
 

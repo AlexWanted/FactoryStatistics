@@ -34,7 +34,7 @@ public class OverviewFragment extends Fragment {
     GraphView graphView;
     SwipeRefreshLayout refreshLayout;
     TextView by_day, by_working_day, by_previous_working_day;
-
+    double prevMaxBarValue = 0;
     public OverviewFragment() { }
 
     public static OverviewFragment newInstance() {
@@ -77,7 +77,7 @@ public class OverviewFragment extends Fragment {
                 by_working_day.setText(getContext().getResources().getString(R.string.tonne, presenter.getWeight_2()));
                 by_previous_working_day.setText(getContext().getResources().getString(R.string.tonne, presenter.getWeight_3()));
                 if (graphView != null)
-                    graphView.setBarValues(presenter.getValues(), false);
+                    graphView.setBarValues(presenter.getValues(), false, false);
             }
         } else {
             OverviewModel model = new OverviewModel();
@@ -133,7 +133,9 @@ public class OverviewFragment extends Fragment {
 
     public void updateChart(ArrayList<Float> values, float weight_1, float weight_2, float weight_3) {
         if (graphView != null) {
-            graphView.setBarValues(values, true);
+            if (prevMaxBarValue <= 1) graphView.setBarValues(values, true, false);
+            else graphView.setBarValues(values, true, true);
+            prevMaxBarValue = graphView.getMaxBarValue();
 
             animateValues(weight_1, by_day);
             animateValues(weight_2, by_working_day);

@@ -55,15 +55,6 @@ public class HoursFragment extends Fragment {
         return fragment;
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HoursFragment.
-     */
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,7 +72,7 @@ public class HoursFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_hours, container, false);
         GraphView graphView = view.findViewById(R.id.graph);
         if (dataset != null)
-            graphView.setBarValues(dataset, false);
+            graphView.setBarValues(dataset, false, false);
 
 
         /*ShapeOfView shapeOfView = view.findViewById(R.id.myShape);
