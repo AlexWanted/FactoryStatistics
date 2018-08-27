@@ -1,271 +1,277 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout
+    android:id="@+id/refresh"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/container"
-    android:clickable="true">
-
-    <android.support.constraint.Guideline
-        android:id="@+id/header_top_guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="@dimen/header_top_guideline_percent" />
-    <android.support.constraint.Guideline
-        android:id="@+id/header_bottom_guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="@dimen/header_bottom_guideline_percent"/>
-
-    <android.support.constraint.Guideline
-        android:id="@+id/card_guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="@dimen/card_top_guideline_percent"/>
-
-    <android.support.constraint.Guideline
-        android:id="@+id/text_start_guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="@dimen/text_start_guideline_percent" />
-    <android.support.constraint.Guideline
-        android:id="@+id/text_end_guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="@dimen/text_end_guideline_percent" />
-    <android.support.constraint.Guideline
-        android:id="@+id/text_center_vertical_guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="@dimen/text_center_vertical_guideline_percent" />
-    <android.support.constraint.Guideline
-        android:id="@+id/text_top_guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="@dimen/text_top_guideline_percent" />
-    <android.support.constraint.Guideline
-        android:id="@+id/text_center_horizontal_guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="@dimen/text_center_horizontal_guideline_percent" />
-    <android.support.constraint.Guideline
-        android:id="@+id/text_bottom_guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="@dimen/text_bottom_guideline_percent" />
-    <android.support.constraint.Guideline
-        android:id="@+id/settings_start_guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="@dimen/settings_start_guideline_percent"/>
-    <android.support.constraint.Guideline
-        android:id="@+id/settings_end_guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="@dimen/settings_end_guideline_percent"/>
-    <android.support.constraint.Guideline
-        android:id="@+id/settings_top_guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="@dimen/settings_top_guideline_percent"/>
-    <android.support.constraint.Guideline
-        android:id="@+id/settings_bottom_guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="@dimen/settings_bottom_guideline_percent"/>
-
-    <View
+    android:layout_height="wrap_content">
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@drawable/header_gradient"
-        app:layout_constraintBottom_toBottomOf="@+id/header_bottom_guideline"
-        app:layout_constraintTop_toTopOf="@+id/header_top_guideline" />
+        android:layout_height="match_parent"
+        android:id="@+id/container"
+        android:clickable="true">
 
-    <ImageView
-        android:id="@+id/settings"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:src="@drawable/ic_settings"
-        android:background="?selectableItemBackground"
-        app:layout_constraintStart_toStartOf="@+id/settings_start_guideline"
-        app:layout_constraintEnd_toEndOf="@+id/settings_end_guideline"
-        app:layout_constraintTop_toTopOf="@+id/settings_top_guideline"
-        app:layout_constraintBottom_toBottomOf="@+id/settings_bottom_guideline"/>
+        <android.support.constraint.Guideline
+            android:id="@+id/header_top_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="@dimen/header_top_guideline_percent" />
+        <android.support.constraint.Guideline
+            android:id="@+id/header_bottom_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="@dimen/header_bottom_guideline_percent"/>
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        app:layout_constraintStart_toStartOf="@+id/text_start_guideline"
-        app:layout_constraintEnd_toEndOf="@+id/text_end_guideline"
-        app:layout_constraintTop_toTopOf="@+id/text_top_guideline"
-        app:layout_constraintBottom_toBottomOf="@+id/text_center_horizontal_guideline"
-        android:weightSum="6">
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/by_day"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="4"
-            android:gravity="center"
-            android:maxLines="1"
-            android:text="@string/full_day"
-            android:textColor="#dcffffff"
-            android:textStyle="bold"
-            android:fontFamily="sans-serif-condensed"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="10sp"
-            app:autoSizeStepGranularity="2sp" />
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/number_by_day"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:gravity="center"
-            android:text="0 т"
-            android:maxLines="2"
-            android:textColor="@android:color/white"
-            app:autoSizeTextType="uniform"
-            app:autoSizeStepGranularity="4sp" />
-    </LinearLayout>
+        <android.support.constraint.Guideline
+            android:id="@+id/card_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="@dimen/card_top_guideline_percent"/>
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        app:layout_constraintStart_toStartOf="@+id/text_start_guideline"
-        app:layout_constraintEnd_toEndOf="@+id/text_center_vertical_guideline"
-        app:layout_constraintTop_toTopOf="@+id/text_center_horizontal_guideline"
-        app:layout_constraintBottom_toBottomOf="@+id/text_bottom_guideline"
-        android:weightSum="6">
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/by_working_day"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:layout_weight="4"
-            android:gravity="end"
-            android:maxLines="1"
-            android:text="@string/this_day"
-            android:textStyle="bold"
-            android:textColor="#dcffffff"
-            android:fontFamily="sans-serif-condensed"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="8sp"
-            app:autoSizeStepGranularity="2sp" />
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/number_by_working_day"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:layout_weight="2"
-            android:gravity="center"
-            android:text="0 т"
-            android:maxLines="2"
-            android:textColor="@android:color/white"
-            app:autoSizeTextType="uniform"
-            app:autoSizeStepGranularity="2sp" />
-    </LinearLayout>
+        <android.support.constraint.Guideline
+            android:id="@+id/text_start_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="@dimen/text_start_guideline_percent" />
+        <android.support.constraint.Guideline
+            android:id="@+id/text_end_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="@dimen/text_end_guideline_percent" />
+        <android.support.constraint.Guideline
+            android:id="@+id/text_center_vertical_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="@dimen/text_center_vertical_guideline_percent" />
+        <android.support.constraint.Guideline
+            android:id="@+id/text_top_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="@dimen/text_top_guideline_percent" />
+        <android.support.constraint.Guideline
+            android:id="@+id/text_center_horizontal_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="@dimen/text_center_horizontal_guideline_percent" />
+        <android.support.constraint.Guideline
+            android:id="@+id/text_bottom_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="@dimen/text_bottom_guideline_percent" />
+        <android.support.constraint.Guideline
+            android:id="@+id/settings_start_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="@dimen/settings_start_guideline_percent"/>
+        <android.support.constraint.Guideline
+            android:id="@+id/settings_end_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="@dimen/settings_end_guideline_percent"/>
+        <android.support.constraint.Guideline
+            android:id="@+id/settings_top_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="@dimen/settings_top_guideline_percent"/>
+        <android.support.constraint.Guideline
+            android:id="@+id/settings_bottom_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="@dimen/settings_bottom_guideline_percent"/>
 
-    <View
-        android:layout_width="0.5dp"
-        android:layout_height="0dp"
-        android:background="#cacaca"
-        app:layout_constraintStart_toStartOf="@+id/text_center_vertical_guideline"
-        app:layout_constraintEnd_toEndOf="@+id/text_center_vertical_guideline"
-        app:layout_constraintTop_toTopOf="@+id/text_center_horizontal_guideline"
-        app:layout_constraintBottom_toBottomOf="@+id/text_bottom_guideline"/>
-
-    <LinearLayout
-        android:id="@+id/cards"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        app:layout_constraintStart_toStartOf="@+id/text_center_vertical_guideline"
-        app:layout_constraintEnd_toEndOf="@+id/text_end_guideline"
-        app:layout_constraintTop_toTopOf="@+id/text_center_horizontal_guideline"
-        app:layout_constraintBottom_toBottomOf="@+id/text_bottom_guideline"
-        android:weightSum="6">
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/by_previous_working_day"
+        <View
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:layout_weight="4"
-            android:gravity="start"
-            android:maxLines="1"
-            android:text="@string/previous_day"
-            android:textColor="#dcffffff"
-            android:textStyle="bold"
-            android:fontFamily="sans-serif-condensed"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="8sp"
-            app:autoSizeStepGranularity="2sp" />
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/number_by_previous_working_day"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:layout_weight="2"
-            android:gravity="center"
-            android:text="0 т"
-            android:maxLines="2"
-            android:textColor="@android:color/white"
-            app:autoSizeTextType="uniform"
-            app:autoSizeStepGranularity="2sp" />
-    </LinearLayout>
+            android:layout_height="0dp"
+            android:background="@drawable/header_gradient"
+            app:layout_constraintBottom_toBottomOf="@+id/header_bottom_guideline"
+            app:layout_constraintTop_toTopOf="@+id/header_top_guideline" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="4dp"
-        android:paddingEnd="4dp"
-        android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="@+id/text_bottom_guideline">
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_gravity="center"
-            app:cardBackgroundColor="@android:color/white"
-            app:cardUseCompatPadding="true"
-            app:cardElevation="3dp"
-            app:cardCornerRadius="12dp">
+        <ImageView
+            android:id="@+id/settings"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:src="@drawable/ic_settings"
+            android:background="?selectableItemBackground"
+            app:layout_constraintStart_toStartOf="@+id/settings_start_guideline"
+            app:layout_constraintEnd_toEndOf="@+id/settings_end_guideline"
+            app:layout_constraintTop_toTopOf="@+id/settings_top_guideline"
+            app:layout_constraintBottom_toBottomOf="@+id/settings_bottom_guideline"/>
 
-            <ru.seveks.factorystatistics.GraphView
-                android:id="@+id/graph"
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="@+id/text_start_guideline"
+            app:layout_constraintEnd_toEndOf="@+id/text_end_guideline"
+            app:layout_constraintTop_toTopOf="@+id/text_top_guideline"
+            app:layout_constraintBottom_toBottomOf="@+id/text_center_horizontal_guideline"
+            android:weightSum="6">
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/by_day"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:bar="@drawable/header_gradient"
-                android:padding="10dp"
-                app:textSize="25sp"
-                app:barPaddingLeft="2dp"
-                app:barPaddingRight="2dp" />
-        </android.support.v7.widget.CardView>
+                android:layout_weight="4"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="@string/full_day"
+                android:textColor="#dcffffff"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-condensed"
+                app:autoSizeTextType="uniform"
+                app:autoSizeMinTextSize="10sp"
+                app:autoSizeStepGranularity="2sp" />
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/number_by_day"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="0 т"
+                android:maxLines="2"
+                android:textColor="@android:color/white"
+                app:autoSizeTextType="uniform"
+                app:autoSizeStepGranularity="4sp" />
+        </LinearLayout>
 
-        <android.support.v7.widget.CardView
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="@+id/text_start_guideline"
+            app:layout_constraintEnd_toEndOf="@+id/text_center_vertical_guideline"
+            app:layout_constraintTop_toTopOf="@+id/text_center_horizontal_guideline"
+            app:layout_constraintBottom_toBottomOf="@+id/text_bottom_guideline"
+            android:weightSum="6">
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/by_working_day"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:layout_weight="4"
+                android:gravity="end"
+                android:maxLines="1"
+                android:text="@string/this_day"
+                android:textStyle="bold"
+                android:textColor="#dcffffff"
+                android:fontFamily="sans-serif-condensed"
+                app:autoSizeTextType="uniform"
+                app:autoSizeMinTextSize="8sp"
+                app:autoSizeStepGranularity="2sp" />
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/number_by_working_day"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="0 т"
+                android:maxLines="2"
+                android:textColor="@android:color/white"
+                app:autoSizeTextType="uniform"
+                app:autoSizeStepGranularity="2sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="0dp"
+            android:background="#cacaca"
+            app:layout_constraintStart_toStartOf="@+id/text_center_vertical_guideline"
+            app:layout_constraintEnd_toEndOf="@+id/text_center_vertical_guideline"
+            app:layout_constraintTop_toTopOf="@+id/text_center_horizontal_guideline"
+            app:layout_constraintBottom_toBottomOf="@+id/text_bottom_guideline"/>
+
+        <LinearLayout
+            android:id="@+id/cards"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="@+id/text_center_vertical_guideline"
+            app:layout_constraintEnd_toEndOf="@+id/text_end_guideline"
+            app:layout_constraintTop_toTopOf="@+id/text_center_horizontal_guideline"
+            app:layout_constraintBottom_toBottomOf="@+id/text_bottom_guideline"
+            android:weightSum="6">
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/by_previous_working_day"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:layout_weight="4"
+                android:gravity="start"
+                android:maxLines="1"
+                android:text="@string/previous_day"
+                android:textColor="#dcffffff"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-condensed"
+                app:autoSizeTextType="uniform"
+                app:autoSizeMinTextSize="8sp"
+                app:autoSizeStepGranularity="2sp" />
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/number_by_previous_working_day"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="0 т"
+                android:maxLines="2"
+                android:textColor="@android:color/white"
+                app:autoSizeTextType="uniform"
+                app:autoSizeStepGranularity="2sp" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_gravity="center"
-            app:cardBackgroundColor="@android:color/white"
-            app:cardUseCompatPadding="true"
-            app:cardElevation="3dp"
-            app:cardCornerRadius="12dp"/>
-    </LinearLayout>
-</android.support.constraint.ConstraintLayout>
+            android:layout_height="wrap_content"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:orientation="vertical"
+            app:layout_constraintTop_toTopOf="@+id/text_bottom_guideline">
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_gravity="center"
+                    app:cardBackgroundColor="@android:color/white"
+                    app:cardUseCompatPadding="true"
+                    app:cardElevation="3dp"
+                    app:cardCornerRadius="12dp">
+
+                    <ru.seveks.factorystatistics.GraphView
+                        android:id="@+id/graph"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:bar="@drawable/header_gradient"
+                        android:padding="10dp"
+                        app:textSize="25sp"
+                        app:barPaddingLeft="2dp"
+                        app:barPaddingRight="2dp" />
+                </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardUseCompatPadding="true"
+                app:cardElevation="3dp"
+                app:cardCornerRadius="12dp"/>
+        </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
+</android.support.v4.widget.SwipeRefreshLayout>
