@@ -22,6 +22,8 @@ import com.github.florent37.shapeofview.manager.ClipPathManager;
 
 import java.util.ArrayList;
 
+import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -130,10 +132,16 @@ public class HoursFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        if (getActivity() != null)
-            ((MainActivity)getActivity()).setStatusBarTranslucent(true, Color.WHITE);
+        if (getActivity() != null) {
+            if(getActivity().getResources().getConfiguration().orientation == ORIENTATION_PORTRAIT)
+                ((MainActivity) getActivity()).setStatusBarTranslucent(true, Color.WHITE);
+            else
+                ((MainActivity) getActivity()).setStatusBarTranslucent(false, Color.WHITE);
+        }
         //mListener = null;
     }
+
+
 
     /**
      * This interface must be implemented by activities that contain this

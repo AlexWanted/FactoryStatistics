@@ -77,21 +77,24 @@ public class OverviewModel implements Serializable {
                                 }
                                 Log.d("DB", "Successfully parsed file");
                             } catch (Exception e) {
+                                map.clear();
                                 for (int i = 0; i < 24; i++)
                                     map.add(0f);
-                                Log.e("DB", "Failed to parsed file");
+                                Log.e("DB", "Failed to parse file");
                             } finally {
                                 DBFUtils.close(reader);
                             }
                         }
                     }
                 } else {
+                    map.clear();
                     for (int i = 0; i < 24; i++)
                         map.add(0f);
                     Log.e("DB", "Failed to authorize");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                map.clear();
                 for (int i = 0; i < 24; i++)
                     map.add(0f);
                 Log.e("DB", "Failed to connect");
