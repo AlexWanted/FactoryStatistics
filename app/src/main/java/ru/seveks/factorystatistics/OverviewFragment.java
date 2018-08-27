@@ -8,10 +8,14 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.support.transition.TransitionSet;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.transition.Fade;
+import android.transition.Slide;
 import android.transition.TransitionInflater;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,7 +95,8 @@ public class OverviewFragment extends Fragment {
                     FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                     Fragment hoursFragment = HoursFragment.newInstance(presenter.getValues());
                     ft.addToBackStack("charts");
-                    ft.hide(getActivity().getSupportFragmentManager().findFragmentByTag("overview"));
+                    ft.setCustomAnimations(R.anim.slide_in_to_top, R.anim.slide_out_to_bottom, R.anim.slide_in_to_top, R.anim.slide_out_to_bottom);
+                    //ft.hide(getActivity().getSupportFragmentManager().findFragmentByTag("overview"));
                     ft.add(R.id.fragments_container, hoursFragment, "charts");
                     ft.commit();
                 }
