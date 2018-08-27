@@ -69,6 +69,7 @@ public class OverviewPresenter implements Parcelable {
             @Override
             public void onLoad(ArrayList<Float> fields) {
                 if (fragment != null) {
+                    weight_1 = weight_2 = weight_3 = 0;
                     for (float i : fields) {
                         weight_1 += i;
                         if (i >= 7 && i < 19) weight_2 += i;

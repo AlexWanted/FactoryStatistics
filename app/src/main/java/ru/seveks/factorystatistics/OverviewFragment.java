@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,6 +32,7 @@ public class OverviewFragment extends Fragment {
     private final String PRESENTER_KEY = "presenter";
     private OverviewPresenter presenter;
     GraphView graphView;
+    SwipeRefreshLayout refreshLayout;
     TextView by_day, by_working_day, by_previous_working_day;
 
     public OverviewFragment() { }
@@ -64,7 +66,7 @@ public class OverviewFragment extends Fragment {
         by_day = view.findViewById(R.id.number_by_day);
         by_working_day = view.findViewById(R.id.number_by_working_day);
         by_previous_working_day = view.findViewById(R.id.number_by_previous_working_day);
-
+        refreshLayout = view.findViewById(R.id.refresh);
         graphView = view.findViewById(R.id.graph);
 
         if (savedInstanceState != null) {
@@ -82,6 +84,7 @@ public class OverviewFragment extends Fragment {
             presenter = new OverviewPresenter(model);
             presenter.attachFragment(this);
             presenter.getFilesInDirectory();
+            refreshLayout.setRefreshing(true);
         }
 
         graphView.setOnClickListener(new View.OnClickListener() {
@@ -118,6 +121,13 @@ public class OverviewFragment extends Fragment {
                 }
             }
         });
+
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                presenter.getFilesInDirectory();
+            }
+        });
         return view;
     }
 
@@ -128,6 +138,7 @@ public class OverviewFragment extends Fragment {
             animateValues(weight_1, by_day);
             animateValues(weight_2, by_working_day);
             animateValues(weight_3, by_previous_working_day);
+            refreshLayout.setRefreshing(false);
         }
     }
 
