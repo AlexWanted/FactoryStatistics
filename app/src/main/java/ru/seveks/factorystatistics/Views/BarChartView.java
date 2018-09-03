@@ -32,7 +32,7 @@ public class BarChartView extends View {
 
     private static final String TAG = BarChartView.class.getSimpleName();
     private Context mContext;
-    private Paint mTextPaint, mShadowPaint;
+    private Paint mTextPaint, mSelectedBarPaint, mShadowPaint;
     private Rect mGraphRect, mBarRect, viewRect, mTextRect;
     private ArrayList<Float> barValues = new ArrayList<>();
     private int[] mBarLefts;
@@ -44,7 +44,7 @@ public class BarChartView extends View {
     private int mBarBackgroundResource;
     private int mGraphBackgroundResource;*/
     private int mSelectedBar = -1;
-    private float selectedBarPadding = 0;
+    private float selectedBarAnimatedValue = 0;
     private float barPadding = 0;
     private float barPaddingLeft = 0;
     private float barPaddingRight = 0;
@@ -84,6 +84,7 @@ public class BarChartView extends View {
         barValues = new ArrayList<>();
         mContext = context;
         mTextPaint = new Paint();
+        mSelectedBarPaint = new Paint();
         mShadowPaint = new Paint();
 
         viewRect = new Rect();
@@ -96,13 +97,12 @@ public class BarChartView extends View {
 
         decimalFormat = new DecimalFormat("0.# т");
 
-        //porterDuffMode = PorterDuff.Mode.DST_OUT;
-        //mXferMode = new PorterDuffXfermode(porterDuffMode);
-
 
         mTextPaint.setTypeface(Typeface.DEFAULT_BOLD);
         mTextPaint.setTextAlign(Paint.Align.CENTER);
         mTextPaint.setFlags( Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
+
+        mSelectedBarPaint.setColor(ContextCompat.getColor(context, R.color.colorAccent));
 
         setLayerType(LAYER_TYPE_SOFTWARE, mShadowPaint);
         mShadowPaint.setColor(Color.WHITE);
@@ -212,7 +212,6 @@ public class BarChartView extends View {
 
             if (mSelectedBar != -1){
                 mBarRect.left = mBarLefts[mSelectedBar];
-                //mBarRect.right = mBarLefts.get(mSelectedBar).right;
                 mBarRect.right = mSelectedBar+1 != getBarCount() ? mBarLefts[mSelectedBar+1] : mGraphRect.right;
                 mBarRect.top = mGraphRect.top;
                 mBarRect.bottom = mGraphRect.bottom;
@@ -230,18 +229,18 @@ public class BarChartView extends View {
                     mBarRect.bottom -= barPadding+textSize;
                 }
 
-                mBarRect.left -=selectedBarPadding;
-                mBarRect.right += selectedBarPadding;
-                mBarRect.top -= selectedBarPadding*2;
-                mBarRect.bottom += selectedBarPadding*2;
+                mBarRect.left -= selectedBarAnimatedValue;
+                mBarRect.right += selectedBarAnimatedValue;
+                mBarRect.top -= selectedBarAnimatedValue *2;
+                mBarRect.bottom += selectedBarAnimatedValue *2;
 
-                float radius = (float) Math.pow(selectedBarPadding, 1.5);
+                float radius = (float) Math.pow(selectedBarAnimatedValue, 1.5);
                 radius *= 0.75;
 
                 mShadowPaint.setShadowLayer(radius,
-                        0, selectedBarPadding,
+                        0, selectedBarAnimatedValue,
                         Color.GRAY);
-                canvas.drawRect(mBarRect, mShadowPaint);
+                //canvas.drawRect(mBarRect, mShadowPaint);
 
                 float barRatio = barValues.get(mSelectedBar) / maxBarValue;
                 int barBottom = mBarRect.bottom;
@@ -279,7 +278,8 @@ public class BarChartView extends View {
 
                 mBarRect.bottom = barBottom;
                 mBarRect.top += (1 - barRatio) * mBarRect.height();
-                if (maxBarValue != 0) canvas.drawRect(mBarRect, mTextPaint);
+                //if (maxBarValue != 0)
+                canvas.drawRect(mBarRect, mSelectedBarPaint);
 
                 canvas.drawPath(mThumbPath, mShadowPaint);
                 canvas.drawText(text, mTextRect.centerX(), (float) (mTextRect.centerY()+height/3), mTextPaint);
@@ -343,7 +343,7 @@ public class BarChartView extends View {
                 scaleAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
-                        selectedBarPadding = (float) animation.getAnimatedValue();
+                        selectedBarAnimatedValue = (float) animation.getAnimatedValue();
                         invalidate();
                     }
                 });

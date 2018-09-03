@@ -40,6 +40,8 @@ public class PieChartView extends View {
     }
 
     private static final String TAG = PieChartView.class.getSimpleName();
+    private static final int LEGEND_POSITION_RIGHT = 0,
+            LEGEND_POSITION_BOTTOM = 1;
     private Context mContext;
     private ArrayList<Recipe> pieValues = new ArrayList<>();
     private float[] mPieceStartAngles;
@@ -48,11 +50,11 @@ public class PieChartView extends View {
 
     private RectF pieRect;
     private Rect availableRect, mLegendTextRect, mTitleTextRect;
-    private Path mThumbPath;
 
     private Drawable mGraphBackground;
     private DecimalFormat decimalFormat;
 
+    private int mLegendPosition = LEGEND_POSITION_RIGHT;
     private int mSelectedPiece = -1;
     private float mSelectionValueAnimator = 0;
     private int textColor;
@@ -60,8 +62,9 @@ public class PieChartView extends View {
     private float mSumValue = 0;
     private float textSize = 0;
     private float thumbTextSize = 0;
-    private String text = "";
+    private String text = "", mLongestName = "";
 
+    private Path mThumbPath;
     //draw time varialbes
     int pieGraphRadius, pieceHeight, thumbHeight, thumbWidth, textRectRealWidth;
     float prevAngle, sweepAngle, customTextSize, averagePadding, animatedValue, thumbCornerRadius;
@@ -91,13 +94,10 @@ public class PieChartView extends View {
         mPieceStartAngles = new float[0];
         mLegendTextBottoms= new int[0];
         mContext = context;
+        mThumbPath = new Path();
         mPiecePaint = new Paint();
         mPiecePaint.setStyle(Paint.Style.FILL_AND_STROKE);
         mPiecePaint.setFlags(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
-
-        mThumbPaint = new Paint();
-        mThumbPaint.setColor(Color.WHITE);
-        mThumbPaint.setFlags(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
 
         mLegendTextPaint = new Paint();
         mLegendTextPaint.setColor(ContextCompat.getColor(mContext, R.color.colorPrimaryDark));
@@ -109,7 +109,9 @@ public class PieChartView extends View {
         mSelectedPiecePaint.setFlags(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
         setLayerType(LAYER_TYPE_SOFTWARE, mSelectedPiecePaint);
 
-
+        mThumbPaint = new Paint();
+        mThumbPaint.setColor(Color.WHITE);
+        mThumbPaint.setFlags(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
 
         pieceColorSet = new int[]{
                 ContextCompat.getColor(mContext, R.color.materialIndigo400),
@@ -119,7 +121,7 @@ public class PieChartView extends View {
         pieRect = new RectF();
         availableRect = new Rect();
         mTitleTextRect = new Rect();
-        mThumbPath = new Path();
+        mLegendTextRect = new Rect();
         decimalFormat = new DecimalFormat("0.### т");
 
         setClickable(true);
@@ -133,6 +135,7 @@ public class PieChartView extends View {
             }
             textSize = a.getDimension(R.styleable.CustomViews_textSize, 70);
             thumbTextSize = a.getDimension(R.styleable.CustomViews_thumbTextSize, 100);
+            mLegendPosition = a.getInteger(R.styleable.CustomViews_legendPosition, LEGEND_POSITION_RIGHT);
             a.recycle();
         }
 
@@ -147,25 +150,53 @@ public class PieChartView extends View {
         availableRect.bottom -= getPaddingBottom();
 
         if (getPiecesCount() > 0) {
-            pieGraphRadius = availableRect.width() / 4;
+            switch (mLegendPosition){
+                case LEGEND_POSITION_RIGHT:{
+                    pieGraphRadius = availableRect.width() / 4;
+                    pieRect.left = availableRect.left;
+                    pieRect.right = availableRect.left + 2 * pieGraphRadius;
+                    pieRect.top = availableRect.centerY() - pieGraphRadius;
+                    pieRect.bottom = availableRect.centerY() + pieGraphRadius;
 
-            pieRect.left = availableRect.left;
-            pieRect.right = availableRect.left + 2 * pieGraphRadius;
-            pieRect.top = availableRect.centerY() - pieGraphRadius;
-            pieRect.bottom = availableRect.centerY() + pieGraphRadius;
+                    mLegendTextRect.left = availableRect.centerX()+getPaddingLeft();
+                    mLegendTextRect.top = availableRect.top;
+                    mLegendTextRect.right = availableRect.right;
+                    mLegendTextRect.bottom = availableRect.bottom;
 
-            mLegendTextRect = availableRect;
-            mLegendTextRect.left = availableRect.centerX()+getPaddingLeft();
+                    break;
+                }
+                case LEGEND_POSITION_BOTTOM:{
+                    pieGraphRadius = availableRect.height() / 4;
+                    pieRect.left = availableRect.centerX() - pieGraphRadius;
+                    pieRect.right = availableRect.centerX() + pieGraphRadius;
+                    pieRect.top = availableRect.top;
+                    pieRect.bottom = pieRect.top + pieGraphRadius*2;
+
+                    mLegendTextRect.left = availableRect.left;
+                    mLegendTextRect.top = availableRect.top + pieGraphRadius*2 + getPaddingBottom();
+                    mLegendTextRect.right = availableRect.right;
+                    mLegendTextRect.bottom = availableRect.bottom;
+                    break;
+                }
+            }
+
 
             prevAngle = -90;
-            while (textSize * getPiecesCount() >= mLegendTextRect.height()) {
-                textSize -= 0.5f;
+
+            mLegendTextPaint.setTextSize(textSize);
+            mLegendTextPaint.getTextBounds(mLongestName, 0, mLongestName.length(), mTitleTextRect);
+            textRectRealWidth = (int) (mLegendTextRect.right - (mLegendTextRect.left+textSize/2+textSize));
+            while (textSize * getPiecesCount() >= mLegendTextRect.height() ||
+                    mTitleTextRect.width() > textRectRealWidth) {
+                textSize -= 2.5f;
+                mLegendTextPaint.setTextSize(textSize);
+                Log.d(TAG, "nameWidth = "+mTitleTextRect.width()+" legendWidth = "+textRectRealWidth);
+                mLegendTextPaint.getTextBounds(mLongestName, 0, mLongestName.length(), mTitleTextRect);
             }
             pieceHeight = mLegendTextRect.height() / getPiecesCount();
 
             for (int i = 0; i < pieValues.size(); i++) {
-                customTextSize = textSize;
-                mLegendTextBottoms[i] = pieceHeight *i + pieceHeight;
+                mLegendTextBottoms[i] = mLegendTextRect.top + pieceHeight *i + pieceHeight;
                 mPiecePaint.setColor(pieceColorSet[i % pieceColorSet.length]);
 
                 if (i != mSelectedPiece) {
@@ -178,14 +209,7 @@ public class PieChartView extends View {
                 mLegendTextPaint.setTextAlign(Paint.Align.LEFT);
                 mLegendTextPaint.setTextSize(textSize);
                 mLegendTextPaint.getTextBounds(pieValues.get(i).name, 0, pieValues.get(i).name.length(), mTitleTextRect);
-                textRectRealWidth = (int) (mLegendTextRect.right - (mLegendTextRect.left+textSize/2+textSize));
-                /*while (mTitleTextRect.width() > textRectRealWidth){
-                    customTextSize -= 2.5f;
-                    Log.d(TAG, "scaling down "+pieValues.get(i).name);
-                    mLegendTextPaint.setTextSize(customTextSize);
-                    mLegendTextPaint.getTextBounds(pieValues.get(i).name, 0, pieValues.get(i).name.length(), mTitleTextRect);
-                }*/
-                canvas.drawText(pieValues.get(i).name, mLegendTextRect.left+textSize*2, pieceHeight * i + pieceHeight, mLegendTextPaint);
+                canvas.drawText(pieValues.get(i).name, mLegendTextRect.left+textSize*2, mLegendTextBottoms[i], mLegendTextPaint);
 
                 mPieceStartAngles[i] = prevAngle;
                 sweepAngle = 360 * (pieValues.get(i).amount / mSumValue);
@@ -211,7 +235,7 @@ public class PieChartView extends View {
 
                 averagePadding = (getPaddingLeft() + getPaddingRight() + getPaddingTop() + getPaddingBottom()) / 4;
                 animatedValue = (float) (averagePadding * 0.25 * mSelectionValueAnimator * mSelectionValueAnimator);
-                //mSelectedPiecePaint.setShadowLayer(animatedValue, 0, animatedValue, Color.parseColor("#50000000"));
+
                 canvas.drawArc(pieRect, mPieceStartAngles[mSelectedPiece], sweepAngle, true, mSelectedPiecePaint);
 
                 canvas.drawRect(
@@ -230,20 +254,19 @@ public class PieChartView extends View {
                 mTitleTextRect.left = (int) (pieRect.centerX()-thumbWidth/2);
                 mTitleTextRect.right = (int) (pieRect.centerX()+thumbWidth/2);;
                 mTitleTextRect.top = availableRect.top;
-                mTitleTextRect.bottom = mTitleTextRect.top+thumbHeight;
+                mTitleTextRect.bottom = mTitleTextRect.top+thumbHeight;//-getPaddingTop();
 
-                thumbCornerRadius = mTitleTextRect.height()/2;
+                int r = mTitleTextRect.height()/2;
                 mThumbPath.reset();
-                mThumbPath.moveTo(mTitleTextRect.right-thumbCornerRadius, mTitleTextRect.top);
-                mThumbPath.rQuadTo(thumbCornerRadius, 0, thumbCornerRadius, thumbCornerRadius);
-                mThumbPath.rQuadTo(0, thumbCornerRadius, -thumbCornerRadius, thumbCornerRadius);
-                mThumbPath.lineTo(mTitleTextRect.left+thumbCornerRadius, mTitleTextRect.bottom);
-                mThumbPath.rQuadTo(-thumbCornerRadius, 0, -thumbCornerRadius, -thumbCornerRadius);//bottom-left corner
-                mThumbPath.rQuadTo(0, -thumbCornerRadius, thumbCornerRadius, -thumbCornerRadius);
-                mThumbPath.lineTo(mTitleTextRect.right-thumbCornerRadius, mTitleTextRect.top);
-
-                //mThumbPaint.setShadowLayer(animatedValue, 0, (float) (animatedValue-animatedValue*0.15), Color.parseColor("#50000000"));
+                mThumbPath.moveTo(mTitleTextRect.right-r, mTitleTextRect.top);
+                mThumbPath.rQuadTo(r, 0, r, r);
+                mThumbPath.rQuadTo(0, r, -r, r);
+                mThumbPath.lineTo(mTitleTextRect.left+r, mTitleTextRect.bottom);
+                mThumbPath.rQuadTo(-r, 0, -r, -r);//bottom-left corner
+                mThumbPath.rQuadTo(0, -r, r, -r);
+                mThumbPath.lineTo(mTitleTextRect.right-r, mTitleTextRect.top);
                 canvas.drawPath(mThumbPath, mThumbPaint);
+
                 mLegendTextPaint.setTextAlign(Paint.Align.CENTER);
                 canvas.drawText(text, mTitleTextRect.centerX(), (float) (mTitleTextRect.centerY()+thumbHeight/3), mLegendTextPaint);
             }
@@ -259,8 +282,18 @@ public class PieChartView extends View {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                 case MotionEvent.ACTION_MOVE: {
-                    Log.d(TAG, mLegendTextRect.left +" "+availableRect.centerX());
-                    /*if (mX < mLegendTextRect.left) {
+                    boolean isTouchingPie = false;
+                    switch (mLegendPosition){
+                        case LEGEND_POSITION_RIGHT:{
+                            isTouchingPie = mX < mLegendTextRect.left;
+                            break;
+                        }
+                        case LEGEND_POSITION_BOTTOM:{
+                            isTouchingPie = mY < mLegendTextRect.top;
+                            break;
+                        }
+                    }
+                    if (isTouchingPie) {
                         int cenX = (int) pieRect.centerX();
                         int cenY = (int) pieRect.centerY();
                         float angle = (float) ((Math.atan2(mY - cenY, mX - cenX) - Math.atan2(100 - cenY, 0)));
@@ -273,12 +306,12 @@ public class PieChartView extends View {
                                 setSelectedPiece(i, true);
                             }
                         }
-                    } else {*/
+                    } else {
                         for (int i=0; i<mLegendTextBottoms.length; i++){
                             int prev = i == 0 ? 0 : mLegendTextBottoms[i-1];
-                            if (prev< mY && mY < mLegendTextBottoms[i]) setSelectedPiece(i, true);
+                            if (prev< mY && mY < mLegendTextBottoms[i]) setSelectedPiece(i, false);
                         }
-                    //}
+                    }
                     break;
                 }
                 case MotionEvent.ACTION_CANCEL:{
@@ -308,21 +341,28 @@ public class PieChartView extends View {
 
     public void setSelectedPiece(final int index, boolean animate){
         if (mSelectedPiece != index) {
-            if (animate && index < getPiecesCount()) {
-                mSelectedPiece = index;
-                ValueAnimator valueAnimator = ValueAnimator.ofFloat(0f, 1);
-                valueAnimator.setDuration(50);
-                valueAnimator.setInterpolator(new SuperDecelerateInterpolator());
-                valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator animation) {
-                        mSelectionValueAnimator = (float) animation.getAnimatedValue();
-                        invalidate();
-                    }
-                });
-                if (index != -1) valueAnimator.start();
-                else valueAnimator.reverse();
+            if (index < getPiecesCount()) {
+                if (animate) {
+                    mSelectedPiece = index;
+                    ValueAnimator valueAnimator = ValueAnimator.ofFloat(0f, 1);
+                    valueAnimator.setDuration(50);
+                    valueAnimator.setInterpolator(new SuperDecelerateInterpolator());
+                    valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                        @Override
+                        public void onAnimationUpdate(ValueAnimator animation) {
+                            mSelectionValueAnimator = (float) animation.getAnimatedValue();
+                            invalidate();
+                        }
+                    });
+                    if (index != -1) valueAnimator.start();
+                    else valueAnimator.reverse();
+                } else {
+                    mSelectionValueAnimator = 1;
+                    mSelectedPiece = index;
+                    invalidate();
+                }
             } else {
+                mSelectionValueAnimator = 0;
                 mSelectedPiece = -1;
                 invalidate();
             }
@@ -368,14 +408,18 @@ public class PieChartView extends View {
             float sumValue = 0;
             final PropertyValuesHolder[] recipesValues = new PropertyValuesHolder[recipes.size()];
             for (int i=0; i<recipes.size(); i++){
+                Log.d(TAG, "length = '"+mLongestName+"' name.length = '"+recipes.get(i).name+"'");
+                if (mLongestName.length() <= recipes.get(i).name.length()){
+                    mLongestName = recipes.get(i).name;
+                }
                 sumValue += recipes.get(i).amount;
                 float value = 0;
-
                 if (pieValues.size() != 0 && pieValues.get(i) != null) value = pieValues.get(i).amount;
                 PropertyValuesHolder holder =
                         PropertyValuesHolder.ofFloat(String.valueOf(i), value, recipes.get(i).amount);
                 recipesValues[i] = holder;
             }
+            Log.d(TAG, "mLongestName = "+mLongestName);
             setSumValue(sumValue, animateSumValue);
             ValueAnimator animator = new ValueAnimator();
             animator.setDuration(1250);
