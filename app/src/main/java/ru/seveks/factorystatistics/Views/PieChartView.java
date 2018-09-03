@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
@@ -30,7 +31,7 @@ import ru.seveks.factorystatistics.R;
 
 public class PieChartView extends View {
 
-    public static class Recipe {
+    public static class Recipe implements Serializable {
         String name;
         float amount;
         public Recipe(String name, float amount){
@@ -376,6 +377,10 @@ public class PieChartView extends View {
         return pieValues.size();
     }
 
+    public ArrayList<Recipe> getPieValues() {
+        return pieValues;
+    }
+
     public void setSumValue(float sumValue, boolean animate){
         if (animate){
             ValueAnimator valueAnimator = ValueAnimator.ofFloat(mSumValue, sumValue);
@@ -404,23 +409,24 @@ public class PieChartView extends View {
     public void setValues(final ArrayList<Recipe> recipes, final boolean animateValues, boolean animateSumValue) {
         mPieceStartAngles = new float[recipes.size()];
         mLegendTextBottoms= new int[recipes.size()];
-        if (animateValues){
-            float sumValue = 0;
-            final PropertyValuesHolder[] recipesValues = new PropertyValuesHolder[recipes.size()];
-            for (int i=0; i<recipes.size(); i++){
-                Log.d(TAG, "length = '"+mLongestName+"' name.length = '"+recipes.get(i).name+"'");
-                if (mLongestName.length() <= recipes.get(i).name.length()){
-                    mLongestName = recipes.get(i).name;
-                }
-                sumValue += recipes.get(i).amount;
-                float value = 0;
-                if (pieValues.size() != 0 && pieValues.get(i) != null) value = pieValues.get(i).amount;
-                PropertyValuesHolder holder =
-                        PropertyValuesHolder.ofFloat(String.valueOf(i), value, recipes.get(i).amount);
-                recipesValues[i] = holder;
+        float sumValue = 0;
+        final PropertyValuesHolder[] recipesValues = new PropertyValuesHolder[recipes.size()];
+        for (int i=0; i<recipes.size(); i++){
+            Log.d(TAG, "length = '"+mLongestName+"' name.length = '"+recipes.get(i).name+"'");
+            if (mLongestName.length() <= recipes.get(i).name.length()){
+                mLongestName = recipes.get(i).name;
             }
+            sumValue += recipes.get(i).amount;
+            float value = 0;
+            if (pieValues.size() != 0 && pieValues.get(i) != null) value = pieValues.get(i).amount;
+            PropertyValuesHolder holder =
+                    PropertyValuesHolder.ofFloat(String.valueOf(i), value, recipes.get(i).amount);
+            recipesValues[i] = holder;
+        }
+        setSumValue(sumValue, animateSumValue);
+        if (animateValues){
             Log.d(TAG, "mLongestName = "+mLongestName);
-            setSumValue(sumValue, animateSumValue);
+
             ValueAnimator animator = new ValueAnimator();
             animator.setDuration(1250);
             animator.setInterpolator(new SuperDecelerateInterpolator());
@@ -438,7 +444,8 @@ public class PieChartView extends View {
             });
             animator.start();
         } else {
-            this.pieValues = recipes;
+            pieValues.clear();
+            this.pieValues.addAll(recipes);
             invalidate();
         }
     }

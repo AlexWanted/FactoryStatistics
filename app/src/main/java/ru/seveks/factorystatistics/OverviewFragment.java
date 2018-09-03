@@ -92,7 +92,7 @@ public class OverviewFragment extends Fragment {
                 by_working_day.setText(getContext().getResources().getString(R.string.tonne, presenter.getWeight_2()));
                 by_previous_working_day.setText(getContext().getResources().getString(R.string.tonne, presenter.getWeight_3()));
                 if (barChartView != null)
-                    barChartView.setValues(presenter.getValues(), false, false);
+                    barChartView.setValues(presenter.getBarValues(), false, false);
             }
         } else {
             presenter = new OverviewPresenter();
@@ -106,11 +106,25 @@ public class OverviewFragment extends Fragment {
             public void onClick(View v) {
                 if(getActivity().getSupportFragmentManager().findFragmentByTag("charts") == null) {
                     FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                    Fragment hoursFragment = HoursFragment.newInstance(presenter.getValues());
+                    Fragment hoursFragment = HoursFragment.newInstance(presenter.getBarValues());
                     ft.addToBackStack("charts");
                     ft.setCustomAnimations(R.anim.slide_in_to_top, R.anim.slide_out_to_bottom, R.anim.slide_in_to_top, R.anim.slide_out_to_bottom);
                     //ft.hide(getActivity().getSupportFragmentManager().findFragmentByTag("overview"));
                     ft.add(R.id.fragments_container, hoursFragment, "charts");
+                    ft.commit();
+                }
+            }
+        });
+
+        pieChartView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(getActivity().getSupportFragmentManager().findFragmentByTag("recipes") == null) {
+                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                    Fragment hoursFragment = RecipesFragment.newInstance(pieChartView.getPieValues());
+                    ft.addToBackStack("recipes");
+                    ft.setCustomAnimations(R.anim.slide_in_to_top, R.anim.slide_out_to_bottom, R.anim.slide_in_to_top, R.anim.slide_out_to_bottom);
+                    ft.add(R.id.fragments_container, hoursFragment, "recipes");
                     ft.commit();
                 }
             }
@@ -167,6 +181,7 @@ public class OverviewFragment extends Fragment {
     }
     public void updateChart(ArrayList<Float> barValues, ArrayList<PieChartView.Recipe> pieValues, float weight_1, float weight_2, float weight_3) {
         if (barChartView != null) {
+            presenter.setRecipesValues(pieValues);
             pieChartView.setValues(pieValues, true, true);
             if (prevMaxBarValue <= 1) barChartView.setValues(barValues, true, false);
             else barChartView.setValues(barValues, true, true);

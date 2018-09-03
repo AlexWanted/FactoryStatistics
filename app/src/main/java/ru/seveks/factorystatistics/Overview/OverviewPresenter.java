@@ -2,13 +2,10 @@ package ru.seveks.factorystatistics.Overview;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.widget.Toast;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 import ru.seveks.factorystatistics.OverviewFragment;
-import ru.seveks.factorystatistics.R;
 import ru.seveks.factorystatistics.Views.PieChartView;
 
 public class OverviewPresenter implements Parcelable {
@@ -16,18 +13,20 @@ public class OverviewPresenter implements Parcelable {
     private OverviewFragment fragment;
     private OverviewModel model;
     private float weight_1 = 0, weight_2 = 0, weight_3 = 0;
-    private ArrayList<Float> values;
+    private ArrayList<Float> barValues;
+    private ArrayList<PieChartView.Recipe> recipesValues;
 
     public OverviewPresenter() {
         this.model = new OverviewModel();
-        this.values = new ArrayList<>();
+        this.barValues = new ArrayList<>();
+        this.recipesValues = new ArrayList<>();
     }
 
     protected OverviewPresenter(Parcel in) {
         weight_1 = in.readFloat();
         weight_2 = in.readFloat();
         weight_3 = in.readFloat();
-        values = (ArrayList<Float>) in.readSerializable();
+        barValues = (ArrayList<Float>) in.readSerializable();
         model = (OverviewModel) in.readSerializable();
     }
 
@@ -63,8 +62,16 @@ public class OverviewPresenter implements Parcelable {
         return weight_3;
     }
 
-    public ArrayList<Float> getValues() {
-        return values;
+    public ArrayList<Float> getBarValues() {
+        return barValues;
+    }
+
+    public ArrayList<PieChartView.Recipe> getRecipesValues() {
+        return recipesValues;
+    }
+
+    public void setRecipesValues(ArrayList<PieChartView.Recipe> recipesValues) {
+        this.recipesValues = recipesValues;
     }
 
     public void getFilesInDirectory(){
@@ -81,7 +88,7 @@ public class OverviewPresenter implements Parcelable {
                             if (i >= 7 && i < 19) weight_2 += i;
                             else weight_3 += i;
                         }
-                        values = barGraphValues;
+                        barValues = barGraphValues;
                         fragment.updateChart(barGraphValues, pieGraphValues, weight_1, weight_2, weight_3);
                     }
                 } else fragment.onConnectionError();
@@ -99,7 +106,7 @@ public class OverviewPresenter implements Parcelable {
         dest.writeFloat(weight_1);
         dest.writeFloat(weight_2);
         dest.writeFloat(weight_3);
-        dest.writeSerializable(values);
+        dest.writeSerializable(barValues);
         dest.writeSerializable(model);
     }
 }
