@@ -75,6 +75,7 @@ public class OverviewModel implements Serializable {
                                 while (matcher.find()) {
                                     String name = matcher.group(1).replaceAll(",","");
                                     name = name.substring(0,1).toUpperCase()+name.substring(1,name.length());
+                                    name = name.trim();
                                     String valueStr = matcher.group(2).replaceAll("\\s", "");
                                     float value = Float.valueOf(valueStr.replace(",","."));
                                     PieChartView.Recipe recipe = new PieChartView.Recipe(name, value);
