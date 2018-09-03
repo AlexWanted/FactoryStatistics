@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import ru.seveks.factorystatistics.OverviewFragment;
 import ru.seveks.factorystatistics.R;
+import ru.seveks.factorystatistics.Views.PieChartView;
 
 public class OverviewPresenter implements Parcelable {
 
@@ -69,17 +70,19 @@ public class OverviewPresenter implements Parcelable {
     public void getFilesInDirectory(){
         model.getFTPFiles(new OverviewModel.LoadFilesCallback() {
             @Override
-            public void onLoad(boolean isError, ArrayList<Float> fields) {
+            public void onLoad(boolean isError,
+                               ArrayList<Float> barGraphValues,
+                               ArrayList<PieChartView.Recipe> pieGraphValues) {
                 if (!isError) {
                     if (fragment != null) {
                         weight_1 = weight_2 = weight_3 = 0;
-                        for (float i : fields) {
+                        for (float i : barGraphValues) {
                             weight_1 += i;
                             if (i >= 7 && i < 19) weight_2 += i;
                             else weight_3 += i;
                         }
-                        values = fields;
-                        fragment.updateChart(fields, weight_1, weight_2, weight_3);
+                        values = barGraphValues;
+                        fragment.updateChart(barGraphValues, pieGraphValues, weight_1, weight_2, weight_3);
                     }
                 } else fragment.onConnectionError();
             }

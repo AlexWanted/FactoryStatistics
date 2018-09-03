@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="GraphView">
+    <declare-styleable name="CustomViews">
         <attr name="barPadding" format="dimension"/>
         <attr name="barPaddingLeft" format="dimension"/>
         <attr name="barPaddingRight" format="dimension"/>
@@ -12,6 +12,5 @@
         <attr name="textSize" format="dimension"/>
         <attr name="thumbTextSize" format="dimension"/>
         <attr name="textColor" format="color"/>
-
     </declare-styleable>
 </resources>

@@ -2,25 +2,16 @@ package ru.seveks.factorystatistics;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Path;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.transition.AutoTransition;
-import android.transition.ChangeBounds;
-import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
-
-import com.github.florent37.shapeofview.ShapeOfView;
-import com.github.florent37.shapeofview.manager.ClipPathManager;
 
 import java.util.ArrayList;
+
+import ru.seveks.factorystatistics.Views.BarChartView;
 
 import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
 
@@ -70,9 +61,9 @@ public class HoursFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_hours, container, false);
-        GraphView graphView = view.findViewById(R.id.graph);
+        BarChartView barChartView = view.findViewById(R.id.barChart);
         if (dataset != null)
-            graphView.setBarValues(dataset, false, false);
+            barChartView.setValues(dataset, false, false);
 
 
         /*ShapeOfView shapeOfView = view.findViewById(R.id.myShape);

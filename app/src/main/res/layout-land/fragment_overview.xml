@@ -265,8 +265,8 @@
                 app:cardElevation="3dp"
                 app:cardCornerRadius="12dp">
 
-                <ru.seveks.factorystatistics.GraphView
-                    android:id="@+id/graph"
+                <ru.seveks.factorystatistics.Views.BarChartView
+                    android:id="@+id/barChart"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:bar="@drawable/header_gradient"

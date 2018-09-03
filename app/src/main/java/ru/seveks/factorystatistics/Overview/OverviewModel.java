@@ -2,24 +2,23 @@ package ru.seveks.factorystatistics.Overview;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import android.util.SparseArray;
-
-import com.linuxense.javadbf.DBFField;
-import com.linuxense.javadbf.DBFReader;
-import com.linuxense.javadbf.DBFRow;
-import com.linuxense.javadbf.DBFUtils;
 
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import ru.seveks.factorystatistics.Views.PieChartView;
 
 public class OverviewModel implements Serializable {
+
+    private static final String TAG = OverviewModel.class.getSimpleName();
 
     public OverviewModel() {
     }
@@ -29,14 +28,14 @@ public class OverviewModel implements Serializable {
     }
 
     interface LoadFilesCallback{
-        void onLoad(boolean isError, ArrayList<Float> fields);
+        void onLoad(boolean isError, ArrayList<Float> barFields, ArrayList<PieChartView.Recipe> pieFields);
     }
 
     private class FTPTask extends AsyncTask<Void, Void, Void> {
 
         LoadFilesCallback callback;
-        InputStream inputStream;
-        ArrayList<Float> map;
+        ArrayList<Float> barGraphValues;
+        ArrayList<PieChartView.Recipe> pieGraphValues;
         boolean isError = false;
         FTPClient ftpClient;
         @Override
@@ -46,63 +45,75 @@ public class OverviewModel implements Serializable {
 
         FTPTask(LoadFilesCallback callback) {
             this.callback = callback;
-            this.map = new ArrayList<>();
+            this.barGraphValues = new ArrayList<>();
+            this.pieGraphValues = new ArrayList<>();
         }
 
         @Override
         protected Void doInBackground(Void... params) {
             try {
                 ftpClient = new FTPClient();
+                ftpClient.setControlEncoding("Cp1251");
                 ftpClient.connect("78.107.253.212", 21);
 
                 if(ftpClient.login("korma", "3790")) {
                     FTPFile[] ftpFiles = ftpClient.listFiles("/USB_DISK/korma/");
                     for (FTPFile file : ftpFiles) {
-                        if (file.getName().equals("month03-15.dbf")) {
-                            inputStream = ftpClient.retrieveFileStream("/USB_DISK/korma/"+file.getName());
-                            Log.d("DB", "Found file");
-                            DBFReader reader = null;
-                            try {
-                                reader = new DBFReader(inputStream);
-                                DBFRow row;
-                                int day = new Random(System.currentTimeMillis()).nextInt(13);
-                                Log.d("DB", "Day "+(day+1));
-                                while ((row = reader.nextRow()) != null) {
-                                    if (row.getInt("DAY") == day+1) {
-                                        for (int i = 1; i <= 24; i++) {
-                                            if (row.getString("H" + i) != null)
-                                                map.add(row.getFloat("H" + i)/1000);
-                                            else
-                                                map.add(0f);
-                                        }
-                                    }
-                                }
-                                Log.d("DB", "Successfully parsed file");
-                            } catch (Exception e) {
-                                isError = true;
-                                map.clear();
-                                for (int i = 0; i < 24; i++)
-                                    map.add(0f);
-                                Log.e("DB", "Failed to parse file");
-                                e.printStackTrace();
-                            } finally {
-                                DBFUtils.close(reader);
+                        if (file.getName().endsWith("18.txt")) {
+                            InputStream inputStream = ftpClient.retrieveFileStream("/USB_DISK/korma/" + file.getName());
+                            InputStreamReader reader = new InputStreamReader(inputStream, "Cp1251");
+                            int data;
+                            String result = "";
+                            int index = 0;
+                            while ((data = reader.read()) != -1) {
+                                index++;
+                                result = result + (char) data;
                             }
+                            if (file.getName().equals("volume_rec_31_08_18.txt")) {
+                                Pattern linePattern = Pattern.compile("\\d+\\s{4}(.*)\\s{5,}([\\d,]+)");
+                                Matcher matcher = linePattern.matcher(result);
+                                while (matcher.find()) {
+                                    String name = matcher.group(1).replaceAll(",","");
+                                    name = name.substring(0,1).toUpperCase()+name.substring(1,name.length());
+                                    String valueStr = matcher.group(2).replaceAll("\\s", "");
+                                    float value = Float.valueOf(valueStr.replace(",","."));
+                                    PieChartView.Recipe recipe = new PieChartView.Recipe(name, value);
+                                    pieGraphValues.add(recipe);
+                                }
+                            } else if (file.getName().equals("volume_time_31_08_18.txt")) {
+                                Pattern linePattern = Pattern.compile("\\d+\\s+(\\d+,\\d)");
+                                Matcher matcher = linePattern.matcher(result);
+                                while (matcher.find()) {
+                                    float value = Float.parseFloat(matcher.group(1).replace(",", "."));
+                                    barGraphValues.add(value);
+                                }
+                            }
+
+                            inputStream.close();
+                            reader.close();
+                            while (!ftpClient.completePendingCommand());
                         }
                     }
                 } else {
                     isError = true;
-                    map.clear();
-                    for (int i = 0; i < 24; i++)
-                        map.add(0f);
+                    barGraphValues.clear();
+                    for (int i = 0; i < 24; i++){
+                        barGraphValues.add(0f);
+                        PieChartView.Recipe recipe = new PieChartView.Recipe(String.valueOf(i), 0f);
+                        pieGraphValues.add(recipe);
+                    }
                     Log.e("DB", "Failed to authorize");
+
                 }
             } catch (Exception e) {
                 e.printStackTrace();
                 isError = true;
-                map.clear();
-                for (int i = 0; i < 24; i++)
-                    map.add(0f);
+                barGraphValues.clear();
+                for (int i = 0; i < 24; i++) {
+                    barGraphValues.add(0f);
+                    PieChartView.Recipe recipe = new PieChartView.Recipe(String.valueOf(i), 0f);
+                    pieGraphValues.add(recipe);
+                }
                 Log.e("DB", "Failed to connect");
             }
             return null;
@@ -116,7 +127,7 @@ public class OverviewModel implements Serializable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            callback.onLoad(isError, map);
+            callback.onLoad(isError, barGraphValues, pieGraphValues);
         }
     }
 }
