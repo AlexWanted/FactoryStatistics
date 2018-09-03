@@ -179,13 +179,12 @@ public class PieChartView extends View {
                 mLegendTextPaint.setTextSize(textSize);
                 mLegendTextPaint.getTextBounds(pieValues.get(i).name, 0, pieValues.get(i).name.length(), mTitleTextRect);
                 textRectRealWidth = (int) (mLegendTextRect.right - (mLegendTextRect.left+textSize/2+textSize));
-                Log.d(TAG, pieValues.get(i).name+" "+mTitleTextRect.width()+" "+textRectRealWidth);
-                while (mTitleTextRect.width() > textRectRealWidth){
+                /*while (mTitleTextRect.width() > textRectRealWidth){
                     customTextSize -= 2.5f;
                     Log.d(TAG, "scaling down "+pieValues.get(i).name);
                     mLegendTextPaint.setTextSize(customTextSize);
                     mLegendTextPaint.getTextBounds(pieValues.get(i).name, 0, pieValues.get(i).name.length(), mTitleTextRect);
-                }
+                }*/
                 canvas.drawText(pieValues.get(i).name, mLegendTextRect.left+textSize*2, pieceHeight * i + pieceHeight, mLegendTextPaint);
 
                 mPieceStartAngles[i] = prevAngle;
@@ -261,7 +260,7 @@ public class PieChartView extends View {
                 case MotionEvent.ACTION_DOWN:
                 case MotionEvent.ACTION_MOVE: {
                     Log.d(TAG, mLegendTextRect.left +" "+availableRect.centerX());
-                    if (mX < mLegendTextRect.left) {
+                    /*if (mX < mLegendTextRect.left) {
                         int cenX = (int) pieRect.centerX();
                         int cenY = (int) pieRect.centerY();
                         float angle = (float) ((Math.atan2(mY - cenY, mX - cenX) - Math.atan2(100 - cenY, 0)));
@@ -274,12 +273,12 @@ public class PieChartView extends View {
                                 setSelectedPiece(i, true);
                             }
                         }
-                    } else {
+                    } else {*/
                         for (int i=0; i<mLegendTextBottoms.length; i++){
                             int prev = i == 0 ? 0 : mLegendTextBottoms[i-1];
                             if (prev< mY && mY < mLegendTextBottoms[i]) setSelectedPiece(i, true);
                         }
-                    }
+                    //}
                     break;
                 }
                 case MotionEvent.ACTION_CANCEL:{
