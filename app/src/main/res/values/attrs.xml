@@ -16,5 +16,7 @@
             <enum name="right" value="0"/>
             <enum name="bottom" value="1"/>
         </attr>
+        <attr name="showLegend" format="boolean"/>
+
     </declare-styleable>
 </resources>
