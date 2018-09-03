@@ -20,4 +20,7 @@
         <item quantity="many">%1$d тонн</item>
         <item quantity="other">%1$d тонн</item>
     </plurals>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

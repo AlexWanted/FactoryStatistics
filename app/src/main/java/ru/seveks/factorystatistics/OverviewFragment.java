@@ -7,6 +7,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -15,6 +16,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Interpolator;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,10 +66,21 @@ public class OverviewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_overview, container, false);
 
+        refreshLayout = view.findViewById(R.id.refresh);
+        refreshLayout.setEnabled(false);
+        ImageView refreshButton = view.findViewById(R.id.refreshButton);
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                refreshLayout.setRefreshing(true);
+                presenter.getFilesInDirectory();
+            }
+        });
+
+        ImageView settings = view.findViewById(R.id.settings);
         by_day = view.findViewById(R.id.number_by_day);
         by_working_day = view.findViewById(R.id.number_by_working_day);
         by_previous_working_day = view.findViewById(R.id.number_by_previous_working_day);
-        refreshLayout = view.findViewById(R.id.refresh);
         barChartView = view.findViewById(R.id.barChart);
         pieChartView = view.findViewById(R.id.pieChart);
 
@@ -102,7 +116,23 @@ public class OverviewFragment extends Fragment {
             }
         });
 
-        view.findViewById(R.id.settings).setOnClickListener(new View.OnClickListener() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            LinearLayout textContainer = view.findViewById(R.id.header_text_container);
+            int statusBarHeight = 0;
+            int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+            if (resourceId > 0) statusBarHeight = getResources().getDimensionPixelSize(resourceId);
+            ConstraintLayout.LayoutParams settingsParams = (ConstraintLayout.LayoutParams) settings.getLayoutParams();
+            ConstraintLayout.LayoutParams refreshParams = (ConstraintLayout.LayoutParams) refreshButton.getLayoutParams();
+            ConstraintLayout.LayoutParams textParams = (ConstraintLayout.LayoutParams) textContainer.getLayoutParams();
+            settingsParams.setMargins(0, statusBarHeight, 0, 0);
+            refreshParams.setMargins(0, statusBarHeight, 0, 0);
+            textParams.setMargins(0, statusBarHeight, 0, 0);
+            settings.setLayoutParams(settingsParams);
+            textContainer.setLayoutParams(textParams);
+            refreshButton.setLayoutParams(refreshParams);
+        }
+
+        settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(getActivity().getSupportFragmentManager().findFragmentByTag("settings") == null) {
@@ -121,12 +151,12 @@ public class OverviewFragment extends Fragment {
             }
         });
 
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        /*refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 presenter.getFilesInDirectory();
             }
-        });
+        });*/
         return view;
     }
 
