@@ -7,6 +7,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
+import ru.seveks.factorystatistics.Database.DBHelper;
 import ru.seveks.factorystatistics.Overview.OverviewPresenter;
 import ru.seveks.factorystatistics.Views.BarChartView;
 import ru.seveks.factorystatistics.Views.PieChartView;
@@ -68,14 +70,8 @@ public class OverviewFragment extends Fragment {
 
         refreshLayout = view.findViewById(R.id.refresh);
         refreshLayout.setEnabled(false);
-        ImageView refreshButton = view.findViewById(R.id.refreshButton);
-        refreshButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                refreshLayout.setRefreshing(true);
-                presenter.getFilesInDirectory();
-            }
-        });
+        final ImageView refreshButton = view.findViewById(R.id.refreshButton);
+
 
         ImageView settings = view.findViewById(R.id.settings);
         by_day = view.findViewById(R.id.number_by_day);
@@ -83,6 +79,7 @@ public class OverviewFragment extends Fragment {
         by_previous_working_day = view.findViewById(R.id.number_by_previous_working_day);
         barChartView = view.findViewById(R.id.barChart);
         pieChartView = view.findViewById(R.id.pieChart);
+
 
         if (savedInstanceState != null) {
             presenter = savedInstanceState.getParcelable(PRESENTER_KEY);
@@ -121,7 +118,7 @@ public class OverviewFragment extends Fragment {
             public void onClick(View v) {
                 if(getActivity().getSupportFragmentManager().findFragmentByTag("recipes") == null) {
                     FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                    Fragment hoursFragment = RecipesFragment.newInstance(pieChartView.getPieValues());
+                    Fragment hoursFragment = RecipesFragment.newInstance(pieChartView.getValues());
                     ft.addToBackStack("recipes");
                     ft.setCustomAnimations(R.anim.slide_in_to_top, R.anim.slide_out_to_bottom, R.anim.slide_in_to_top, R.anim.slide_out_to_bottom);
                     ft.add(R.id.fragments_container, hoursFragment, "recipes");
@@ -146,6 +143,16 @@ public class OverviewFragment extends Fragment {
             refreshButton.setLayoutParams(refreshParams);
         }
 
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!refreshLayout.isRefreshing()) {
+                    refreshLayout.setRefreshing(true);
+                    presenter.getFilesInDirectory();
+                }
+            }
+        });
+
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -157,7 +164,6 @@ public class OverviewFragment extends Fragment {
                         settingsFragment.setEnterTransition(TransitionInflater.from(getContext())
                                 .inflateTransition(R.transition.slide_in));
                     }
-
                     ft.addToBackStack("settings");
                     ft.add(R.id.fragments_container, settingsFragment, "settings");
                     ft.commit();

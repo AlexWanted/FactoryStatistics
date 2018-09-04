@@ -230,7 +230,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:padding="10dp"
-                    app:bar="@drawable/header_gradient"
                     app:barPaddingLeft="2dp"
                     app:barPaddingRight="2dp"
                     app:textSize="25sp" />
