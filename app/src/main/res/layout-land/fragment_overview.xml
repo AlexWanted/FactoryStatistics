@@ -252,7 +252,16 @@
                 app:cardBackgroundColor="@android:color/white"
                 app:cardUseCompatPadding="true"
                 app:cardElevation="3dp"
-                app:cardCornerRadius="12dp"/>
+                app:cardCornerRadius="12dp">
+                <ru.seveks.factorystatistics.Views.PieChartView
+                    android:id="@+id/pieChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="10dp"
+                    app:backgroundGraph="@drawable/pie_graph_gradient"
+                    app:thumbTextSize="18sp"
+                    app:textSize="20sp"/>
+            </android.support.v7.widget.CardView>
         </LinearLayout>
     </android.support.constraint.ConstraintLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

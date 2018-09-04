@@ -2,11 +2,15 @@ package ru.seveks.factorystatistics;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 
@@ -44,6 +48,18 @@ public class RecipesFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_recipes, container, false);
         PieChartView pieChartView = view.findViewById(R.id.pieChart);
         pieChartView.setValues(pieValues, false, false);
+        pieChartView.setColorset(Globals.getInstance().pieColors);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int statusBarHeight = 0;
+            int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+            if (resourceId > 0) statusBarHeight = getResources().getDimensionPixelSize(resourceId);
+            RelativeLayout textContainer = view.findViewById(R.id.header_text);
+            ConstraintLayout.LayoutParams textParams = (ConstraintLayout.LayoutParams) textContainer.getLayoutParams();
+            textParams.setMargins(0, statusBarHeight, 0, 0);
+            textContainer.setLayoutParams(textParams);
+        }
+
         return view;
     }
 

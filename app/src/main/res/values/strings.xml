@@ -13,6 +13,8 @@
     <string name="cancel">Отмена</string>
     <string name="save">Сохранить</string>
 
+    <string name="today">Сегодня</string>
+
     <plurals name="weight">
         <item quantity="zero">%1$d тонн</item>
         <item quantity="one">%1$d тонна</item>

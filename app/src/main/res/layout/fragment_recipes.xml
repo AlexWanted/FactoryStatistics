@@ -30,12 +30,45 @@
         android:id="@+id/pieChart"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="30dp"
-        android:paddingBottom="30dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
+        android:layout_marginTop="65dp"
+        android:layout_marginBottom="70dp"
+        android:paddingBottom="5dp"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
         app:backgroundGraph="@drawable/pie_graph_gradient"
         app:legendPosition="bottom"
         app:textSize="20sp"
         app:thumbTextSize="18sp" />
+
+    <RelativeLayout
+        android:id="@+id/header_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@+id/top_guideline"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_backward"
+            android:layout_gravity="center_vertical"
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_forward"
+            android:layout_gravity="center_vertical"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:layout_centerInParent="true"
+            android:text="@string/today"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-condensed" />
+    </RelativeLayout>
 </android.support.constraint.ConstraintLayout>

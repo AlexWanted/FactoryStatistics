@@ -9,7 +9,7 @@
 
     <dimen name="settings_start_guideline_percent">0.89</dimen>
     <dimen name="settings_end_guideline_percent">0.99</dimen>
-    <dimen name="settings_bottom_guideline_percent">0.09</dimen>
+    <dimen name="settings_bottom_guideline_percent">0.085</dimen>
 
     <dimen name="refresh_start_guideline_percent">0.01</dimen>
     <dimen name="refresh_end_guideline_percent">0.11</dimen>
