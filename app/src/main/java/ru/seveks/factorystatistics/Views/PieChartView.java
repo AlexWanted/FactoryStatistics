@@ -138,8 +138,6 @@ public class PieChartView extends View {
             mLegendPosition = a.getInteger(R.styleable.CustomViews_legendPosition, LEGEND_POSITION_RIGHT);
             mShowLegend = a.getBoolean(R.styleable.CustomViews_showLegend, true);
             a.recycle();
-
-            setShowLegend(false);
         }
 
     }
@@ -222,11 +220,10 @@ public class PieChartView extends View {
                 }
                 prevAngle += sweepAngle;
             }
+
             getGraphBackground().setBounds(
-                    (int) pieRect.left,
-                    (int)pieRect.right,
-                    (int)pieRect.top,
-                    (int)pieRect.bottom);
+                    (int)pieRect.left, (int)pieRect.top,
+                    (int)pieRect.right, (int)pieRect.bottom);
             getGraphBackground().draw(canvas);
 
             if (mSelectedItem != -1) {

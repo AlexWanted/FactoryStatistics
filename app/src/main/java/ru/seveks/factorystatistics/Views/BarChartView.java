@@ -36,10 +36,11 @@ public class BarChartView extends View {
     private Rect mGraphRect, mBarRect, viewRect, mTextRect;
     private ArrayList<Float> barValues = new ArrayList<>();
     private int[] mBarLefts;
-    private Drawable mBar;
+    private Drawable[] mBarSet;
     private Drawable mBarBackground;
     private Drawable mGraphBackground;
     private int textColor;
+    private int[] selectedColorSet;
     /*private int mBarResource;
     private int mBarBackgroundResource;
     private int mGraphBackgroundResource;*/
@@ -81,8 +82,9 @@ public class BarChartView extends View {
     }
 
     private void init(Context context, AttributeSet attrs){
-        barValues = new ArrayList<>();
         mContext = context;
+        barValues = new ArrayList<>();
+        mBarSet = new Drawable[1];
         mTextPaint = new Paint();
         mSelectedBarPaint = new Paint();
         mShadowPaint = new Paint();
@@ -102,7 +104,7 @@ public class BarChartView extends View {
         mTextPaint.setTextAlign(Paint.Align.CENTER);
         mTextPaint.setFlags( Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
 
-        mSelectedBarPaint.setColor(ContextCompat.getColor(context, R.color.colorAccent));
+        mSelectedBarPaint.setColor(Color.parseColor("#25FFFFFF"));
 
         setLayerType(LAYER_TYPE_SOFTWARE, mShadowPaint);
         mShadowPaint.setColor(Color.WHITE);
@@ -122,12 +124,16 @@ public class BarChartView extends View {
             barPaddingRight = a.getDimension(R.styleable.CustomViews_barPaddingRight, 0);
             barPaddingTop = a.getDimension(R.styleable.CustomViews_barPaddingTop, 0);
             barPaddingBottom = a.getDimension(R.styleable.CustomViews_barPaddingBottom, 0);
-            mBar = a.getDrawable(R.styleable.CustomViews_bar);
+            mBarSet[0] = a.getDrawable(R.styleable.CustomViews_bar);
             mBarBackground = a.getDrawable(R.styleable.CustomViews_backgroundBar);
             mGraphBackground = a.getDrawable(R.styleable.CustomViews_backgroundGraph);
-            if (getBar() == null) {
-                setBarColor(ContextCompat.getColor(context, R.color.colorAccent));
-            }
+
+            /*setBar(ContextCompat.getDrawable(context, R.drawable.header_gradient),
+                    ContextCompat.getDrawable(context, R.drawable.bar_chart_second_gradient));*/
+
+            setBarColorSet(ContextCompat.getColor(context, R.color.materialIndigo200),
+                    ContextCompat.getColor(context, R.color.colorAccent));
+
             if (getBarBackground() == null) {
                 setBarBackgroundColor(ContextCompat.getColor(context, R.color.colorLightGray));
             }
@@ -204,8 +210,8 @@ public class BarChartView extends View {
                 mBarRect.bottom = barBottom;
                 mBarRect.top += (1 - barRatio) * mBarRect.height();
                 if (i != mSelectedBar && maxBarValue != 0 ) {
-                    getBar().setBounds(mBarRect);
-                    getBar().draw(canvas);
+                    getBar()[i%getBar().length].setBounds(mBarRect);
+                    getBar()[i%getBar().length].draw(canvas);
                 }
 
             }
@@ -279,6 +285,8 @@ public class BarChartView extends View {
                 mBarRect.bottom = barBottom;
                 mBarRect.top += (1 - barRatio) * mBarRect.height();
                 //if (maxBarValue != 0)
+                getBar()[mSelectedBar%getBar().length].setBounds(mBarRect);
+                getBar()[mSelectedBar%getBar().length].draw(canvas);
                 canvas.drawRect(mBarRect, mSelectedBarPaint);
 
                 canvas.drawPath(mThumbPath, mShadowPaint);
@@ -336,23 +344,29 @@ public class BarChartView extends View {
     public void setSelectedBar(final int index, boolean animate){
         long animationDuration = 50;
         if (mSelectedBar != index) {
-            if (animate && index < getBarCount() ) {
-
-                mSelectedBar = index;
-                ValueAnimator scaleAnimator = ValueAnimator.ofFloat(0, 5);
-                scaleAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator animation) {
-                        selectedBarAnimatedValue = (float) animation.getAnimatedValue();
-                        invalidate();
-                    }
-                });
-                scaleAnimator.setDuration(animationDuration);
-                if (index == -1) scaleAnimator.reverse();
-                else scaleAnimator.start();
-                Log.d(TAG,"setSelectedBar: selected bar "+index);
+            if (index < getBarCount() ) {
+                if (animate) {
+                    mSelectedBar = index;
+                    ValueAnimator scaleAnimator = ValueAnimator.ofFloat(0, 5);
+                    scaleAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                        @Override
+                        public void onAnimationUpdate(ValueAnimator animation) {
+                            selectedBarAnimatedValue = (float) animation.getAnimatedValue();
+                            invalidate();
+                        }
+                    });
+                    scaleAnimator.setDuration(animationDuration);
+                    if (index == -1) scaleAnimator.reverse();
+                    else scaleAnimator.start();
+                    Log.d(TAG, "setSelectedBar: selected bar " + index);
+                } else {
+                    mSelectedBar = index;
+                    selectedBarAnimatedValue = 5;
+                    invalidate();
+                }
             } else {
                 mSelectedBar = -1;
+                selectedBarAnimatedValue = 0;
                 invalidate();
             }
         }
@@ -455,8 +469,8 @@ public class BarChartView extends View {
         return mBarBackground;
     }
 
-    public Drawable getBar() {
-        return mBar;
+    public Drawable[] getBar() {
+        return mBarSet;
     }
 
     public float getTextSize() {
@@ -490,19 +504,24 @@ public class BarChartView extends View {
         setGraphBackground(drawable);
     }
 
-    private void setBar(Drawable resource){
-        if (resource == mBar) return;
-        mBar = resource;
+    private void setBar(Drawable... resource){
+        if (resource == mBarSet) return;
+        mBarSet = resource;
         invalidate();
     }
 
-    public void setBarColor(@ColorInt int barColor) {
-        if (mBar instanceof ColorDrawable){
+    public void setBarColorSet(int... barColor) {
+        mBarSet = new Drawable[barColor.length];
+        for (int i=0; i<barColor.length; i++){
+            mBarSet[i] = new ColorDrawable(barColor[i]);
+        }
+        invalidate();
+        /*if (mBar instanceof ColorDrawable){
             ((ColorDrawable)mBar.mutate()).setColor(barColor);
             invalidate();
         } else {
             setBar(new ColorDrawable(barColor));
-        }
+        }*/
     }
 
     public void setBarResource(@DrawableRes int id){

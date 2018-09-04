@@ -27,6 +27,7 @@ public class OverviewPresenter implements Parcelable {
         weight_2 = in.readFloat();
         weight_3 = in.readFloat();
         barValues = (ArrayList<Float>) in.readSerializable();
+        recipesValues = (ArrayList<PieChartView.Recipe>) in.readSerializable();
         model = (OverviewModel) in.readSerializable();
     }
 
@@ -75,7 +76,7 @@ public class OverviewPresenter implements Parcelable {
     }
 
     public void getFilesInDirectory(){
-        model.getFTPFiles(new OverviewModel.LoadFilesCallback() {
+        model.getFiles(null, new OverviewModel.LoadFilesCallback() {
             @Override
             public void onLoad(boolean isError,
                                ArrayList<Float> barGraphValues,
@@ -107,6 +108,7 @@ public class OverviewPresenter implements Parcelable {
         dest.writeFloat(weight_2);
         dest.writeFloat(weight_3);
         dest.writeSerializable(barValues);
+        dest.writeSerializable(recipesValues);
         dest.writeSerializable(model);
     }
 }
